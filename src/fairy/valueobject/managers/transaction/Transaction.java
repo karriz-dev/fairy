@@ -12,13 +12,13 @@ public abstract class Transaction {
 	private short type = 0x01;
 	private long timestamp = 0L;
 	
-	private byte[] signature = null;
-	
 	protected int versionlength = 0;
 	protected String version = null;
 	
 	protected int length = 0;
 	protected byte[] datas = null;
+	
+	private byte[] signature = null;
 	
 	public Transaction(short type)
 	{
@@ -40,6 +40,14 @@ public abstract class Transaction {
 		this.version = new String(stream[4]);
 		this.length = Convert.byteArrayToInt(stream[5]);
 		this.datas = stream[6];
+	}
+	
+	public void setSignature(byte[] sign) {
+		this.signature = sign;
+	}
+	
+	public byte[] getSignature() {
+		return signature;
 	}
 	
 	public byte[] getBytes() {

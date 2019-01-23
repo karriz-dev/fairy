@@ -13,7 +13,7 @@ public class TokenTransaction extends Transaction {
 	// OUTPUT
 	private Map<String, Double> outputList = null;
 	
-	public TokenTransaction(Map<String, Double> outputList) {
+	public TokenTransaction(String ftxid, String ftxaddress, Map<String, Double> outputList) {
 		super(TransactionType.TOKEN);
 		
 		this.outputList = outputList;
