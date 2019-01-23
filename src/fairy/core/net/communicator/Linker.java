@@ -30,12 +30,14 @@ public class Linker extends Thread{
 	{
 		String localIP = Network.getIP();
 		
-		String[] ips = localIP.split(".");
+		String[] ips = localIP.split("\\.");
 
 		short a = Short.parseShort(ips[0]);
 		short b = Short.parseShort(ips[1]);
 		short c = Short.parseShort(ips[2]);
 		short d = Short.parseShort(ips[3]);
+		
+		short counter = 0;
 		
 		String ipAddress = readLinkerPool();
 		
@@ -44,6 +46,14 @@ public class Linker extends Thread{
 		
 		while(localIP != null)
 		{
+			if(counter >= 255) {
+				c++;
+				counter = 0;
+				if(c>=256) {
+					c=0;
+				}
+			}
+			
 			if(!isBoosted){
 				d++;
 				
@@ -63,7 +73,8 @@ public class Linker extends Thread{
 						Debugger.Log(this, "success connection to " + ipAddress);
 					}catch(Exception e) {
 						try {
-							Thread.sleep(500);
+							Thread.sleep(100);
+							counter++;
 						}catch(Exception ex) {
 							Debugger.Log(this, ex);
 						}
@@ -82,7 +93,8 @@ public class Linker extends Thread{
 						isBoosted = false;
 					}catch(Exception e) {
 						try {
-							Thread.sleep(500);
+							Thread.sleep(100);
+							counter++;
 						}catch(Exception ex) {
 							Debugger.Log(this, ex);
 						}
