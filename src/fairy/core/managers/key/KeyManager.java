@@ -15,12 +15,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fairy.core.utils.Debugger;
+import fairy.valueobject.managers.transaction.Transaction;
 
 public class KeyManager 
 {
 	private Map<PrivateKey, PublicKey> keypairMap = null;
 	
 	private static KeyManager instance = null;
+	
+	private KeyManager()
+	{
+		keypairMap = new HashMap<PrivateKey, PublicKey>();
+	}
 	
 	private KeyManager(String walletPath)
 	{
@@ -43,6 +49,9 @@ public class KeyManager
 	
 	public static KeyManager getInstance()
 	{
+		if(instance == null) {
+			instance = new KeyManager();
+		}
 		return instance;
 	}
 	
@@ -82,7 +91,25 @@ public class KeyManager
 			Debugger.Log(this, e);
 			return false;
 		}
-	}
+	}	
+	
+	public boolean Create(int count) {
+		try {
+			for(int i=0;i<count;i++)
+			{
+				SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+				KeyPairGenerator.getInstance("EC").initialize(256, random);
+				
+				KeyPair pair = KeyPairGenerator.getInstance("EC").generateKeyPair();
+				
+				keypairMap.put(pair.getPrivate(), pair.getPublic());
+			}
+	        return Save();
+		}catch(Exception e) {
+			Debugger.Log(this, e);
+			return false;
+		}
+	}	
 	
 	public byte[] Sign(byte[] data, PrivateKey key) {
 		try {
@@ -98,17 +125,27 @@ public class KeyManager
 		}
 	}
 	
-	public boolean Verify(byte[] sign, PublicKey key) {
+	public boolean Verify(Transaction tx, PublicKey key) {
 		try {
 			Signature dsa = Signature.getInstance("SHA1withECDSA");
 
 			dsa.initVerify(key);
 	        
-	        dsa.update("This is string to sign".getBytes("UTF-8"));
+	        dsa.update(tx.getBytes());
 	        
-	        return dsa.verify(sign);
+	        return dsa.verify(tx.getSignature());
 		}catch(Exception e) {
 			return false;
 		}
+	}
+	
+	public int Count() {
+		return keypairMap.size();
+	}
+	
+	@Override
+	public String toString()
+	{
+		return keypairMap.toString();
 	}
 }
