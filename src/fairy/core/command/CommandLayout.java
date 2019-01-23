@@ -12,6 +12,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
+import fairy.core.managers.key.KeyManager;
 import fairy.core.net.communicator.Linker;
 import fairy.core.utils.Debugger;
 import fairy.valueobject.managers.transaction.StatusTransaction;
@@ -40,7 +41,8 @@ public class CommandLayout extends JFrame {
 		textField.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(ExcuteCommand(textField.getText())) {
+				String[] commandWithArgs = textField.getText().split(" ");
+				if(ExcuteCommand(commandWithArgs)) {
 					textField.setBackground(new Color(159, 244, 180));
 					textField.setText("");
 				}else {
@@ -69,12 +71,15 @@ public class CommandLayout extends JFrame {
 		setVisible(true);
 	}
 	
-	private boolean ExcuteCommand(String command)
+	private boolean ExcuteCommand(String[] commandWithArgs)
 	{
+		String command = commandWithArgs[0];
+		
 		switch(command)
 		{
-		case CommandList.EXAMPLE_TRANSACTION:
+		case CommandList.TRANSACTION_MAKE:
 			Transaction tx = new StatusTransaction();
+			
 			return Linker.getInstance().broadcastingTransactrion(tx);
 			default:
 				return false;
