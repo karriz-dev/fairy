@@ -12,6 +12,8 @@ public abstract class Transaction {
 	private short type = 0x01;
 	private long timestamp = 0L;
 	
+	private byte[] signature = null;
+	
 	protected int versionlength = 0;
 	protected String version = null;
 	
@@ -23,7 +25,7 @@ public abstract class Transaction {
 		this.type = type;
 		this.timestamp = System.currentTimeMillis();
 		
-		this.tid = getPrivateKey().substring(0, 32);
+		this.tid = "";
 		
 		this.datas = "Test Transaction".getBytes();
 		this.length = datas.length;
@@ -51,25 +53,6 @@ public abstract class Transaction {
 		System.arraycopy(body, 0, result, header.length, body.length);
 		
 		return result;
-	}
-	
-	private String getPrivateKey(){
-		String result = "";
-		SecureRandom rand = null;
-		
-		try {
-		    rand = SecureRandom.getInstance("SHA1PRNG");
-		} catch (NoSuchAlgorithmException e) {
-		    e.printStackTrace();
-		}
-		
-		int randomkey_index = 0;
-		
-		for(randomkey_index=0;randomkey_index<64;randomkey_index++) {
-			result += Integer.toHexString(rand.nextInt(16));
-		}
-		
-		return result.toUpperCase();
 	}
 	
 	private byte[] getHeaderBytes() {
