@@ -13,6 +13,7 @@ import java.security.SecureRandom;
 import java.security.Signature;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import fairy.core.utils.Debugger;
 import fairy.valueobject.managers.transaction.Transaction;
@@ -110,6 +111,28 @@ public class KeyManager
 			return false;
 		}
 	}	
+	
+	public KeyPair getKeyPair() {
+		try {
+			Random r = new Random();
+			int size = keypairMap.size();
+			int count = 0;
+			int rand = r.nextInt(size);
+			if(size > 0)
+			{
+				for(PrivateKey key: keypairMap.keySet())
+				{
+					if(count == rand)
+						return new KeyPair(keypairMap.get(key), key);
+					count++;
+				}
+			}
+			return null;
+		}catch(Exception e) {
+			System.out.println(e.getMessage() + "/ " + e.getCause());
+			return null;
+		}
+	}
 	
 	public byte[] Sign(byte[] data, PrivateKey key) {
 		try {
