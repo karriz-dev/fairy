@@ -34,7 +34,7 @@ public class BlockManager extends Thread {
 	
 	private boolean generatorGenesis()
 	{
-		String blockid = "";
+		/*String blockid = "";
 		
 		Long timestamp = 1548065280L;
 				
@@ -48,9 +48,9 @@ public class BlockManager extends Thread {
 		
 		String merkleroot = MerkleTree.getMerkleRoot(txlist);
 				
-		Block block = new Block(blockid, timestamp, merkleroot, txlist);
+		Block block = new Block(blockid, timestamp, merkleroot, txlist);*/
 		
-		return block.saveBlock();
+		return false;
 	}
 	
 	public static BlockManager getInstance()
