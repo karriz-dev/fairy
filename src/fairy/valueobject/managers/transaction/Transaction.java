@@ -25,7 +25,7 @@ public abstract class Transaction {
 		this.type = type;
 		this.timestamp = System.currentTimeMillis();
 		
-		this.tid = "";
+		this.tid = "12345678123456781234567812345678";
 		
 		this.datas = "Test Transaction".getBytes();
 		this.length = datas.length;

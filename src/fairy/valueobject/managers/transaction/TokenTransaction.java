@@ -16,6 +16,8 @@ public class TokenTransaction extends Transaction {
 	public TokenTransaction(String ftxid, String ftxaddress, Map<String, Double> outputList) {
 		super(TransactionType.TOKEN);
 		
+		this.ftxid = ftxid;
+		this.ftxaddress = ftxaddress;
 		this.outputList = outputList;
 	}
 
