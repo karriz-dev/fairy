@@ -2,6 +2,7 @@ package fairy.valueobject.managers.block;
 
 import java.util.List;
 
+import fairy.core.security.MerkleTree;
 import fairy.valueobject.managers.transaction.Transaction;
 
 public class Block {
@@ -10,20 +11,22 @@ public class Block {
 	private Long timestamp = 0L;
 	private String merkleroot = null;
 	
+	private String creator = null;
+	
 	//Body
 	private List<Transaction> txlist = null;
-
 	
-	public Block(String blockid, Long timestamp, String merkleroot, List<Transaction> txlist) {
-		super();
-		this.blockid = blockid;
-		this.timestamp = timestamp;
-		this.merkleroot = merkleroot;
-		this.txlist = txlist;
+	public Block(String blockPath){
+		
 	}
 
-	public Block(String filePath) {
+	public Block(String creator, List<Transaction> txlist) {
+		this.creator = creator;
+		this.timestamp = System.currentTimeMillis();
+		this.merkleroot = MerkleTree.getMerkleRoot(txlist);
+		this.txlist = txlist;
 		
+		System.out.println(merkleroot);
 	}
 
 	public boolean saveBlock() {
