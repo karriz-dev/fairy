@@ -17,6 +17,8 @@ import fairy.core.net.communicator.Linker;
 import fairy.core.utils.Debugger;
 import fairy.valueobject.managers.transaction.StatusTransaction;
 import fairy.valueobject.managers.transaction.Transaction;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 
 public class CommandLayout extends JFrame {
 	private JTextField textField = null;
@@ -41,30 +43,53 @@ public class CommandLayout extends JFrame {
 		textField.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				textField.setEnabled(false);
 				String[] commandWithArgs = textField.getText().split(" ");
 				
 				switch(ExcuteCommand(commandWithArgs))
 				{
-				case CommandList.WALLET_GENERATOR_SUCESS:
+				case CommandList.WALLET_GENERATOR_SUCCESS:
+					addMessage("[Fairy]: 지갑 생성에 성공하였습니다. assets\\wallet\\ 경로를 확인해주세요.");
 					textField.setBackground(new Color(159, 244, 180));
 					textField.setText("");
 					break;
 					
 				case CommandList.WALLET_GENERATOR_FAILED:
+					addMessage("[Fairy]: 지갑 생성에 실패하였습니다. 명령어 확인후 다시 시도해주시길바랍니다.");
 					textField.setBackground(new Color(255, 149, 149));
 					textField.setText("");
+					break;
+					
+				case CommandList.WALLET_GENERATOR_FAILED_OVERFLOW:
+					addMessage("[Fairy]: 지갑은 0~100개 사이의 키만 생성 가능합니다.");
+					textField.setBackground(new Color(255, 149, 149));
+					textField.setText("");
+					break;
+					
+				case CommandList.WALLET_LIST_SUCCESS:
+					textField.setBackground(new Color(159, 244, 180));
+					textField.setText("");
+					break;
+					
+				case CommandList.WALLET_LIST_FAILED:
+					addMessage("[Fairy]: 지갑을 불러오지 못했습니다. 지갑 경로를 다시한번 확인해주세요.");
+					textField.setBackground(new Color(255, 149, 149));
+					textField.setText("");
+					break;
+					
+				case CommandList.COMMAND_EXCEPTION:
+					addMessage("[Fairy]: 잘못된 커맨드를 입력하거나 커맨드의 문제가 발생하였습니다.");
+					textField.setBackground(new Color(255, 149, 149));
+					textField.setText("");
+					break;
 				}
+				
+				textArea.setCaretPosition(textArea.getDocument().getLength());
+				textField.setEnabled(true);
 			}
 		});
 		
-		textArea = new JTextArea();
-		textArea.setEditable(false);
-		textArea.setBounds(12, 10, 907, 586);
-		getContentPane().add(textArea);
-		
 		Border border = BorderFactory.createLineBorder(Color.BLACK);
-		textArea.setBorder(BorderFactory.createCompoundBorder(border, 
-		            BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 		textField.setBorder(BorderFactory.createCompoundBorder(border, 
 	            BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 		
@@ -72,6 +97,16 @@ public class CommandLayout extends JFrame {
 		lblCommand.setFont(new Font("굴림", Font.PLAIN, 12));
 		lblCommand.setBounds(12, 611, 73, 17);
 		getContentPane().add(lblCommand);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(12, 10, 907, 586);
+		getContentPane().add(scrollPane);
+		
+		textArea = new JTextArea();
+		scrollPane.setViewportView(textArea);
+		textArea.setEditable(false);
+		textArea.setBorder(BorderFactory.createCompoundBorder(border, 
+		            BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 	
 		setVisible(true);
 	}
@@ -81,12 +116,13 @@ public class CommandLayout extends JFrame {
 		String command = commandWithArgs[0];
 		String[] args = new String[commandWithArgs.length-1];
 		
-		int count = 0;
-		
-		for(String arg:commandWithArgs)
+		if(commandWithArgs.length >=2)
 		{
-			args[count++] = arg;
-		}
+			for(int i=1;i<commandWithArgs.length;i++)
+			{
+				args[i-1] = commandWithArgs[i];
+			}
+		}else args = null;
 		
 		try {
 			switch(command)
@@ -94,14 +130,16 @@ public class CommandLayout extends JFrame {
 			case CommandList.TRANSACTION_MAKE:
 				Transaction tx = new StatusTransaction();
 				if(Linker.getInstance().broadcastingTransactrion(tx)) {
-					return CommandList.TRANSACTION_MAKE_SUCESS;
+					return CommandList.TRANSACTION_MAKE_SUCCESS;
 				}else {
 					return CommandList.TRANSACTION_MAKE_FAILED;
 				}
 			case CommandList.WALLET_GENERATOR:
-				if(args.length>0) {
+				addMessage("[Fairy]: Wallet Generator Load...");
+				if(args == null) {
+					addMessage("[Fairy]: Wallet Generating 100 private keys");
 					if(KeyManager.getInstance().Create(100)) {
-						return CommandList.WALLET_GENERATOR_SUCESS;
+						return CommandList.WALLET_GENERATOR_SUCCESS;
 					}else {
 						return CommandList.WALLET_GENERATOR_FAILED;
 					}
@@ -110,28 +148,30 @@ public class CommandLayout extends JFrame {
 					int c = Integer.parseInt(args[0]);
 					if(c > 0 && c <= 100)
 					{
-						addMessage("[Fairy]: Wallet Generator Load...");
-						
+						addMessage("[Fairy]: Wallet Generating " + c + " private keys");
 						if(KeyManager.getInstance().Create(Integer.parseInt(args[0])))
 						{
-							return CommandList.WALLET_GENERATOR_SUCESS;
+							return CommandList.WALLET_GENERATOR_SUCCESS;
 						}
 					}
-					return CommandList.WALLET_GENERATOR_FAILED;
+					return CommandList.WALLET_GENERATOR_FAILED_OVERFLOW;
 				}
+			case CommandList.WALLET_LIST:
+				addMessage(KeyManager.getInstance().toString());
+				return CommandList.WALLET_LIST_SUCCESS;
 				default:
 					return CommandList.WALLET_GENERATOR_FAILED;
 			}
 		}catch(Exception e) {
 			Debugger.Log(this, e);
-			return CommandList.WALLET_GENERATOR_FAILED;
+			return CommandList.COMMAND_EXCEPTION;
 		}
 	}
 	
 	public boolean addMessage(String message)
 	{
 		try {
-			textArea.append(message);
+			textArea.append(message + "\r\n");
 			return true;
 		}catch(Exception e) {
 			Debugger.Log(this, e);
