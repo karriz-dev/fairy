@@ -1,16 +1,13 @@
 package fairy.demo;
 
-import java.security.KeyPair;
-import java.util.HashMap;
-import java.util.Map;
-
+import fairy.core.command.CommandLayout;
 import fairy.core.managers.key.KeyManager;
-import fairy.valueobject.managers.transaction.TokenTransaction;
-import fairy.valueobject.managers.transaction.Transaction;
+import fairy.core.net.communicator.Linker;
+import fairy.core.net.communicator.Session;
 
 public class FairyClient {
 	public static void main(String[] args) {
-		/*Session.getInstance();
+		Session.getInstance();
 		
 		// waiting session is opened
 		while(Session.getInstance().isOpened());
@@ -18,10 +15,13 @@ public class FairyClient {
 		// Linker Call
 		Linker.getInstance();
 		
-		//CommandLineInterface Layout Call
-		CommandLayout.getInstance();*/
+		// Keymanager Call
+		KeyManager.getInstance("assets/wallet/wallet.fairy");
+				
+		// CommandLineInterface Layout Call
+		CommandLayout.getInstance();
 		
-		KeyManager.getInstance().Create(100);
+		/*KeyManager.getInstance().Create(100);
 		
 		String ftxid = "12345678123456781234567812345678";
 		String ftxaddress = "12345678123456781234567812345678";
@@ -37,6 +37,6 @@ public class FairyClient {
 		if(KeyManager.getInstance().Verify(tx, pair.getPublic()))
 		{
 			System.out.println("OK");
-		}
+		}*/
 	}
 }
