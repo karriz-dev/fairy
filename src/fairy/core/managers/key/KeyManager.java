@@ -24,6 +24,8 @@ public class KeyManager
 	
 	private static KeyManager instance = null;
 	
+	private String path = null;
+	
 	private KeyManager()
 	{
 		keypairMap = new HashMap<PrivateKey, PublicKey>();
@@ -31,6 +33,8 @@ public class KeyManager
 	
 	private KeyManager(String walletPath)
 	{
+		this.path = walletPath;
+		
 		if(walletPath != null)
 		{
 			File wallet = new File(walletPath);
@@ -66,7 +70,14 @@ public class KeyManager
 	
 	private boolean Save() {
 		try {
-			FileOutputStream output = new FileOutputStream("");
+			File file = new File("assets/wallet/wallet.fairy");
+			
+			if(!file.exists())
+			{
+				file.createNewFile();
+			}
+			
+			FileOutputStream output = new FileOutputStream(file);
 			ObjectOutputStream object = new ObjectOutputStream(output);
 			object.writeObject(keypairMap);
 			object.flush();
@@ -129,7 +140,25 @@ public class KeyManager
 			}
 			return null;
 		}catch(Exception e) {
-			System.out.println(e.getMessage() + "/ " + e.getCause());
+			return null;
+		}
+	}
+	
+	public KeyPair getKeyPair(int index) {
+		try {
+			int size = keypairMap.size();
+			int count = 0;
+			if(size > 0)
+			{
+				for(PrivateKey key: keypairMap.keySet())
+				{
+					if(count == index)
+						return new KeyPair(keypairMap.get(key), key);
+					count++;
+				}
+			}
+			return null;
+		}catch(Exception e) {
 			return null;
 		}
 	}
@@ -169,6 +198,19 @@ public class KeyManager
 	@Override
 	public String toString()
 	{
-		return keypairMap.toString();
+		String result = "[Fairy]: wallet(" + path + ")'s list\r\n";
+		
+		int count = 1;
+		for( PrivateKey key : keypairMap.keySet() ){
+            result += String.format("[Index " +count+" ]\r\n" + "Private Key: %s\r\n" + "Pulbic Key: %s", key, keypairMap.get(key)) + "\r\n";
+            count++;
+        }
+		
+		result += "=========================================================================================================\r\n";
+		result += "[Fairy]: wallet(" + path + ")'s list\r\n";
+		result += "[Fairy]: Total count is " + (count-1) + "\r\n";
+		result += "=========================================================================================================\r\n";
+
+		return result;
 	}
 }
