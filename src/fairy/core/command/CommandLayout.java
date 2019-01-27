@@ -42,10 +42,15 @@ public class CommandLayout extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String[] commandWithArgs = textField.getText().split(" ");
-				if(ExcuteCommand(commandWithArgs)) {
+				
+				switch(ExcuteCommand(commandWithArgs))
+				{
+				case CommandList.WALLET_GENERATOR_SUCESS:
 					textField.setBackground(new Color(159, 244, 180));
 					textField.setText("");
-				}else {
+					break;
+					
+				case CommandList.WALLET_GENERATOR_FAILED:
 					textField.setBackground(new Color(255, 149, 149));
 					textField.setText("");
 				}
@@ -71,18 +76,55 @@ public class CommandLayout extends JFrame {
 		setVisible(true);
 	}
 	
-	private boolean ExcuteCommand(String[] commandWithArgs)
+	private int ExcuteCommand(String[] commandWithArgs)
 	{
 		String command = commandWithArgs[0];
+		String[] args = new String[commandWithArgs.length-1];
 		
-		switch(command)
+		int count = 0;
+		
+		for(String arg:commandWithArgs)
 		{
-		case CommandList.TRANSACTION_MAKE:
-			Transaction tx = new StatusTransaction();
-			
-			return Linker.getInstance().broadcastingTransactrion(tx);
-			default:
-				return false;
+			args[count++] = arg;
+		}
+		
+		try {
+			switch(command)
+			{
+			case CommandList.TRANSACTION_MAKE:
+				Transaction tx = new StatusTransaction();
+				if(Linker.getInstance().broadcastingTransactrion(tx)) {
+					return CommandList.TRANSACTION_MAKE_SUCESS;
+				}else {
+					return CommandList.TRANSACTION_MAKE_FAILED;
+				}
+			case CommandList.WALLET_GENERATOR:
+				if(args.length>0) {
+					if(KeyManager.getInstance().Create(100)) {
+						return CommandList.WALLET_GENERATOR_SUCESS;
+					}else {
+						return CommandList.WALLET_GENERATOR_FAILED;
+					}
+				}
+				else {
+					int c = Integer.parseInt(args[0]);
+					if(c > 0 && c <= 100)
+					{
+						addMessage("[Fairy]: Wallet Generator Load...");
+						
+						if(KeyManager.getInstance().Create(Integer.parseInt(args[0])))
+						{
+							return CommandList.WALLET_GENERATOR_SUCESS;
+						}
+					}
+					return CommandList.WALLET_GENERATOR_FAILED;
+				}
+				default:
+					return CommandList.WALLET_GENERATOR_FAILED;
+			}
+		}catch(Exception e) {
+			Debugger.Log(this, e);
+			return CommandList.WALLET_GENERATOR_FAILED;
 		}
 	}
 	
