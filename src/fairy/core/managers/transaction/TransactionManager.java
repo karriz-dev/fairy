@@ -5,6 +5,7 @@ import java.util.Queue;
 
 import fairy.core.command.CommandLayout;
 import fairy.core.utils.Debugger;
+import fairy.valueobject.managers.block.Block;
 import fairy.valueobject.managers.transaction.Transaction;
 
 public class TransactionManager extends Thread 
@@ -32,9 +33,23 @@ public class TransactionManager extends Thread
 		while(true)
 		{
 			try {
-				if(transactionQueue.size() > 0)
-				{
-					CommandLayout.getInstance().addMessage("transaction(" + transactionQueue.poll().toString() + ")recv ! \r\n");
+				synchronized(this) {
+					if(transactionQueue.size() >= MAX_SIZE)
+					{
+						// 트랜잭션이 5개 이상 큐에 쌓이게 될 경우
+						
+						// Transaction Queue를 가지고 Block을 생성
+						Block block = new Block("tester", transactionQueue);
+						block.saveBlock();
+						
+						// 전파를 하기 전에 이미 생성 되어있는 블록이라면 전파를 진행하지 않음
+					
+						// 블록은 생성된 순간 다른 노드들에게 전파를 진행함(전파를 진행하면 보상 지급)
+						
+						// 작업이 끝난 이후에는 트랜잭션 큐를 비워 줌
+						CommandLayout.getInstance().addMessage("block is created(reward : 50.0 BASE)");
+						transactionQueue.clear();
+					}
 				}
 				Thread.sleep(1);
 			}catch(Exception e) {
