@@ -41,19 +41,6 @@ public class FairyClient {
 		// CommandLineInterface Layout Call
 		CommandLayout.getInstance();
 		
-		String ftxid = "12345678123456781234567812345678";
-		String ftxaddress = "12345678123456781234567812345678";
-		Map<String, Double> output = new HashMap<String ,Double>();
-		output.put("", 10081008.0);
-		
-		List<Transaction> txlist = new ArrayList<Transaction>();
-		
-		Transaction tx = new TokenTransaction(ftxid, ftxaddress, output);
-		
-		txlist.add(tx);
-		
-		Block block = new Block("127.0.0.1", txlist);
-		
 		/*KeyManager.getInstance().Create(100);
 		
 		String ftxid = "12345678123456781234567812345678";
