@@ -1,6 +1,7 @@
 package fairy.valueobject.managers.block;
 
 import java.util.List;
+import java.util.Queue;
 
 import fairy.core.security.MerkleTree;
 import fairy.valueobject.managers.transaction.Transaction;
@@ -14,17 +15,17 @@ public class Block {
 	private String creator = null;
 	
 	//Body
-	private List<Transaction> txlist = null;
+	private Queue<Transaction> txqueue = null;
 	
 	public Block(String blockPath){
 		
 	}
 
-	public Block(String creator, List<Transaction> txlist) {
+	public Block(String creator, Queue<Transaction> txqueue) {
 		this.creator = creator;
 		this.timestamp = System.currentTimeMillis();
-		this.merkleroot = MerkleTree.getMerkleRoot(txlist);
-		this.txlist = txlist;
+		this.merkleroot = MerkleTree.getMerkleRoot(txqueue);
+		this.txqueue = txqueue;
 		
 		System.out.println(merkleroot);
 	}
