@@ -9,6 +9,7 @@ import fairy.valueobject.managers.transaction.Transaction;
 public class Block {
 	//Header
 	private String blockid = null;
+	private String prevblockid = null;
 	private Long timestamp = 0L;
 	private String merkleroot = null;
 	
@@ -26,8 +27,6 @@ public class Block {
 		this.timestamp = System.currentTimeMillis();
 		this.merkleroot = MerkleTree.getMerkleRoot(txqueue);
 		this.txqueue = txqueue;
-		
-		System.out.println(merkleroot);
 	}
 
 	public boolean saveBlock() {
