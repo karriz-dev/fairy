@@ -1,13 +1,7 @@
 package fairy.core.managers.block;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import fairy.valueobject.managers.block.Block;
-import fairy.valueobject.managers.transaction.TokenTransaction;
-import fairy.valueobject.managers.transaction.Transaction;
 
 public class BlockManager extends Thread {
 	
@@ -29,7 +23,7 @@ public class BlockManager extends Thread {
 	@Override
 	public void run()
 	{
-		
+		System.out.println("START OK");
 	}
 	
 	private boolean generatorGenesis()
