@@ -28,7 +28,7 @@ public class Linker extends Thread{
 	@Override
 	public void run()
 	{
-		String localIP = Network.getIP();
+		String localIP = Network.getLocalIP();
 		
 		String[] ips = localIP.split("\\.");
 
@@ -62,7 +62,7 @@ public class Linker extends Thread{
 				
 				ipAddress = a + "." + b + "." + c + "." + d;
 				
-				if(!Network.getIP().equals(ipAddress)) {
+				if(!Network.getLocalIP().equals(ipAddress)) {
 					
 					Debugger.Log(this, "send connection request to " + ipAddress);
 					
@@ -81,7 +81,7 @@ public class Linker extends Thread{
 					}	
 				}
 			}else{
-				if(!Network.getIP().equals(ipAddress)) {
+				if(!Network.getLocalIP().equals(ipAddress)) {
 					
 					Debugger.Log(this, "send connection request to " + ipAddress);
 					
