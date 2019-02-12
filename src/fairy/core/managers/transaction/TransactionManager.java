@@ -38,7 +38,6 @@ public class TransactionManager extends Thread
 					if(transactionQueue.size() >= MAX_SIZE)
 					{
 						// Transaction Queue를 가지고 Block을 생성
-						
 						Block block = new Block(Network.getLocalIP(), transactionQueue);
 						block.saveBlock();
 						
