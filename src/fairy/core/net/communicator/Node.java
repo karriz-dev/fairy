@@ -95,7 +95,7 @@ public class Node extends Thread {
 						break;
 					}
 					
-					//TransactionManager.getInstance().Push(transaction);
+					//TransactionManager.getInstance().Push(transaction)3
 				}
 			} catch (Exception e) {
 				Debugger.Log(this, e);
