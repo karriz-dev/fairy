@@ -16,8 +16,6 @@ public class Node extends Thread {
 	
 	private String version = null;
 	
-	private int count = 0;
-	
 	private InputStream nodeInputStream = null;
 	private OutputStream nodeOutputStream = null;
 	
@@ -97,9 +95,7 @@ public class Node extends Thread {
 						break;
 					}
 					
-					TransactionManager.getInstance().Push(transaction);
-
-					count++;
+					//TransactionManager.getInstance().Push(transaction);
 				}
 			} catch (Exception e) {
 				Debugger.Log(this, e);
