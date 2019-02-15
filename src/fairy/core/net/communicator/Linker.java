@@ -2,7 +2,6 @@ package fairy.core.net.communicator;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -11,6 +10,7 @@ import java.util.List;
 
 import fairy.core.utils.Debugger;
 import fairy.core.utils.Network;
+import fairy.valueobject.managers.block.Block;
 import fairy.valueobject.managers.transaction.Transaction;
 
 public class Linker extends Thread{
@@ -134,16 +134,21 @@ public class Linker extends Thread{
 		return true;
 	}
 	
-	public boolean broadcastingBlock(short type)
+	public boolean broadcastingBlock(Block block)
 	{
-		switch(type)
+		for(Socket clnt: sockList)
 		{
-		case Network.TCP:
-			break;
-		case Network.UDP:
-			break;
+			try {
+				clnt.getOutputStream().write(block.getBytes());
+			}catch(Exception e) {
+				Debugger.Log(this, e);
+				try {
+					clnt.close();
+				} catch (IOException ioe) {}
+				return false;
+			}
 		}
-		return false;
+		return true;
 	}
 	
 	public static Linker getInstance() {
