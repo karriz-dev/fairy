@@ -163,34 +163,6 @@ public class KeyManager
 		}
 	}
 	
-	public byte[] Sign(byte[] data, PrivateKey key) {
-		try {
-			Signature dsa = Signature.getInstance("SHA1withECDSA");
-
-	        dsa.initSign(key);
-
-	        dsa.update(data);
-
-	        return dsa.sign();
-		}catch(Exception e) {
-			return null;
-		}
-	}
-	
-	public boolean Verify(Transaction tx, PublicKey key) {
-		try {
-			Signature dsa = Signature.getInstance("SHA1withECDSA");
-
-			dsa.initVerify(key);
-	        
-	        dsa.update(tx.getBytes());
-	        
-	        return dsa.verify(tx.getSignature());
-		}catch(Exception e) {
-			return false;
-		}
-	}
-	
 	public int Count() {
 		return keypairMap.size();
 	}
