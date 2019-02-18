@@ -18,6 +18,10 @@ public class Convert {
 	    buffer.putLong(x);
 	    return buffer.array();
 	}
+	
+	public static byte booleanToByte(boolean b) {
+		return (byte) (b ? 1 : 0 );
+	}
 
 	public static long bytesToLong(byte[] bytes) {
 	    ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);

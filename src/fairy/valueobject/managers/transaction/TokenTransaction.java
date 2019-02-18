@@ -20,6 +20,15 @@ public class TokenTransaction extends Transaction {
 		this.ftxaddress = ftxaddress;
 		this.outputList = outputList;
 	}
+	
+	public double getBalance() {
+		double balance = 0.0;
+		for(String key: outputList.keySet())
+		{
+			balance += outputList.get(key);	
+		}
+		return balance;
+	}
 
 	@Override
 	protected byte[] getDatasBytes() {
