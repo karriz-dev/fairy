@@ -1,6 +1,10 @@
 package fairy.core.utils;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
+
+import fairy.valueobject.managers.transaction.Transaction;
 
 public class Convert {
 	private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
@@ -21,6 +25,47 @@ public class Convert {
 	
 	public static byte booleanToByte(boolean b) {
 		return (byte) (b ? 1 : 0 );
+	}
+	
+	public static byte[] transactionListToBytes(List<Transaction> txlist)
+	{
+		int offset = 0;
+		
+		for(Transaction tx: txlist)
+		{
+			offset = tx.getBytes().length + 4;
+		}
+		
+		byte[] result = new byte[offset];
+		
+		offset = 0;
+		
+		for(Transaction tx: txlist)
+		{
+			int size = tx.getBytes().length;
+			
+			System.arraycopy(Convert.intToByteArray(size), 0, result, offset, 4);
+			
+			offset += 4;
+			
+			System.arraycopy(tx.getBytes(), 0, result, offset, size);
+			
+			offset += size;
+		}
+		
+		return result;
+	}
+	
+	public static List<Transaction> bytesToTransactionList(int max, byte[] bytes)
+	{
+		List<Transaction> txlist = new ArrayList<Transaction>();
+		
+		for(int i=0;i<max;i++)
+		{
+			
+		}
+		
+		return txlist;
 	}
 
 	public static long bytesToLong(byte[] bytes) {
