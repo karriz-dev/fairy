@@ -87,7 +87,7 @@ public class Linker extends Thread{
 					
 					try {
 						Socket socket = new Socket();
-						socket.connect(new InetSocketAddress(ipAddress, 10080), 35);
+						socket.connect(new InetSocketAddress(ipAddress, 10080), 3000);
 						sockList.add(socket);
 						Debugger.Log(this, "success connection to " + ipAddress);
 						isBoosted = false;
