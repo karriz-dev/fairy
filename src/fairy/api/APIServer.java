@@ -13,12 +13,18 @@ public class APIServer {
 	
 	private APIServer() {
 		try {
+			System.out.println("server open");
+			
 			httpServer = HttpServer.create(new InetSocketAddress(12075), 0);
-		
+			
 			httpServer.createContext("/transaction/token",new TokenTransactionHandler());
-		
+			
+			httpServer.createContext("/transaction/list",new TransactionListHandler());
+			
 			httpServer.setExecutor(null);
 			httpServer.start();
+			System.out.println("server start");
+			
 		}catch(Exception e) {
 			
 		}
