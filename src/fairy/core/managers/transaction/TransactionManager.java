@@ -3,11 +3,11 @@ package fairy.core.managers.transaction;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
-import fairy.core.command.CommandLayout;
-import fairy.core.managers.key.KeyManager;
 import fairy.core.net.communicator.Linker;
 import fairy.core.utils.Debugger;
 import fairy.core.utils.Network;
@@ -40,17 +40,27 @@ public class TransactionManager extends Thread
 		{
 			try {
 				
-				// 블록 생성 주기는 10분
-				Thread.sleep(60000);
+				// 블록 생성 주기는 5분
+				Thread.sleep(30000);
 				
 				synchronized(this) {
 					// Transaction Queue를 가지고 Block을 생성
-					Block block = new Block(Network.getLocalIP(), transactionQueue);
+					
+					List<Transaction> txlist = new ArrayList<Transaction>();
+					
+					while(!transactionQueue.isEmpty())
+					{
+						txlist.add(transactionQueue.poll());
+					}
+					
+					Block block = new Block(Network.getLocalIP(), txlist);
 					
 					if(block.Create())
 					{
 						// 블록 생성 성공 시 전파
 						Linker.getInstance().broadcastingBlock(block);
+						
+						// 만약 보상을 지급하려고 하면 if를 넣어 생성 성공시 지급하면 됨
 					}
 				}
 				
