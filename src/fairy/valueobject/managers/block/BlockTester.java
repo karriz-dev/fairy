@@ -8,7 +8,7 @@ import fairy.valueobject.managers.transaction.Transaction;
 
 public class BlockTester {
 	public static void main(String[] args) {
-		Queue<Transaction> txqueue = new LinkedList<Transaction>();
+		/*Queue<Transaction> txqueue = new LinkedList<Transaction>();
 		Transaction tx = new StatusTransaction();
 		
 		txqueue.add(tx);
@@ -31,6 +31,6 @@ public class BlockTester {
 		
 			//System.out.println("Block Size: " + read.length);
 		
-		}else System.out.println("블록 생성에 실패하였습니다. 이미 생성된 블록이 존재합니다.");
+		}else System.out.println("블록 생성에 실패하였습니다. 이미 생성된 블록이 존재합니다.");*/
 	}
 }

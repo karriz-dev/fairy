@@ -3,7 +3,7 @@ package fairy.valueobject.managers.block;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.Queue;
+import java.util.List;
 
 import fairy.core.security.MerkleTree;
 import fairy.core.security.Shield;
@@ -26,7 +26,7 @@ public class Block {
 	private boolean isGenesis = false;
 	
 	//Body
-	private Queue<Transaction> txqueue = null;
+	private List<Transaction> txlist = null;
 	
 	//File 
 	private File blockFile = null;
@@ -35,11 +35,11 @@ public class Block {
 		blockFile = new File(blockPath);
 	}
 
-	public Block(String creator, Queue<Transaction> txqueue) {
+	public Block(String creator, List<Transaction> txlist) {
 		this.creator = creator;
 		this.timestamp = System.currentTimeMillis();
-		this.merkleroot = MerkleTree.getMerkleRoot(txqueue);
-		this.txqueue = txqueue;
+		this.merkleroot = MerkleTree.getMerkleRoot(txlist);
+		this.txlist = txlist;
 		
 		this.bid = Shield.SHA256(this.merkleroot);
 	}
@@ -67,7 +67,7 @@ public class Block {
 	
 	public double getBalance() {
 		double balance = 0.0;
-		for(Transaction tx: txqueue)
+		for(Transaction tx: txlist)
 		{
 			TokenTransaction token = (TokenTransaction)tx;
 			
@@ -120,7 +120,7 @@ public class Block {
 			
 			offset += this.creator.length();
 			
-			System.arraycopy(Convert.intToByteArray(txqueue.size()), 0, buffer, offset, 4);
+			System.arraycopy(Convert.intToByteArray(txlist.size()), 0, buffer, offset, 4);
 			
 			offset += 4;
 		}
@@ -158,7 +158,7 @@ public class Block {
 			
 			offset += this.creator.length();
 			
-			System.arraycopy(Convert.intToByteArray(txqueue.size()), 0, buffer, offset, 4);
+			System.arraycopy(Convert.intToByteArray(txlist.size()), 0, buffer, offset, 4);
 			
 			offset += 4;
 		}
@@ -183,7 +183,7 @@ public class Block {
 	@Override
 	public String toString() {
 		return "Block [bid=" + bid + ", prevbid=" + prevbid + ", timestamp=" + timestamp + ", merkleroot=" + merkleroot
-				+ ", height=" + height + ", creator=" + creator + ", txqueue=" + txqueue + ", blockFile=" + blockFile
+				+ ", height=" + height + ", creator=" + creator + ", txlist=" + txlist + ", blockFile=" + blockFile
 				+ "]";
 	}
 }

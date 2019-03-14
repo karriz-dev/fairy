@@ -24,6 +24,7 @@ public class BlockManager extends Thread {
 	public void run()
 	{
 		System.out.println("START OK");
+		
 	}
 	
 	private boolean generatorGenesis()
