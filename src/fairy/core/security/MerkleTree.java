@@ -1,18 +1,18 @@
 package fairy.core.security;
 
-import java.util.Queue;
+import java.util.List;
 
 import fairy.valueobject.managers.transaction.Transaction;
 
 public class MerkleTree {
 	
-	
-	public static String getMerkleRoot(Queue<Transaction> txqueue) {
-		String root = Shield.SHA256(txqueue.poll().getBytes());
+	public static String getMerkleRoot(List<Transaction> txlist) {
 		
-		while(!txqueue.isEmpty())
+		String root = Shield.SHA256(txlist.get(0).getBytes());
+	
+		for(int i=0;i<txlist.size()-1;i++)
 		{
-			root = Shield.SHA256(txqueue.poll().getBytes());
+			root = Shield.SHA256(root + txlist.get(i+1).getBytes());
 		}
 		
 		return root;
