@@ -13,11 +13,10 @@ import com.sun.net.httpserver.HttpHandler;
 
 import fairy.core.managers.key.KeyManager;
 import fairy.core.managers.transaction.TransactionManager;
-import fairy.core.net.communicator.Session;
 import fairy.valueobject.managers.transaction.TokenTransaction;
 import fairy.valueobject.managers.transaction.Transaction;
 
-public class TokenTransactionHandler extends Handler implements HttpHandler {
+public class TransactionListHandler extends Handler implements HttpHandler {
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
 		
@@ -28,52 +27,31 @@ public class TokenTransactionHandler extends Handler implements HttpHandler {
         parseQuery(query, parameters);
         
         String response = "";
-
+        
         if(!parameters.isEmpty())
         {
         	Map<String, Double> outputList = new HashMap<String, Double>();
             
-        	String ftxid = "";
-        	String ftxaddress = "";
-        	
             for (String key : parameters.keySet()) {
-            	switch(key){
-            	case "ftxid":
-            		ftxid = (String)parameters.get(key);
-            		break;
-            	case "ftxaddress":
-            		ftxaddress = (String)parameters.get(key);
-            		break;
-            	default:
-            		outputList.put(key, Double.valueOf((String)parameters.get(key)));
-            		break;
-            	}
+            	outputList.put(key, (Double)parameters.get(key));
             }
             
-            
-            System.out.println("============================= API HANDLER WORKED !! =============================");
-            System.out.println("FTXID: " + ftxid);
-            System.out.println("FTXADDRESS: " + ftxaddress);            
-            System.out.println("OUTPUT LIST: " + outputList);
-            System.out.println("============================= API HANDLER WORKED !! =============================");
-            
-            Transaction tx = new TokenTransaction(ftxid, ftxaddress, outputList);
+            Transaction tx = new TokenTransaction("0x00", "0x00", outputList);
             
             KeyPair pair = KeyManager.getInstance().getKeyPair();
             
-            tx.setSignature(TransactionManager.getInstance().Sign(tx.getBytes(), pair.getPrivate()));
+            String signature = new String(TransactionManager.getInstance().Sign(tx.getBytes(), pair.getPrivate()));
             
-            response = tx.toString();
-            
-            Session.getInstance().broadcastingTransaction(tx);
+            response = pair.getPublic().toString() + "\r\n" + signature;
             
     		exchange.sendResponseHeaders(200, response.length());
         }
         else
         {
-        	exchange.sendResponseHeaders(500, response.length());
-        
-        	response = "transaction not send... check the arguments !!";
+        	// Input이 없을 때에는 모든 트랜잭션의 값을 조회한다.
+        	exchange.sendResponseHeaders(200, response.length());
+        	
+        	
         }
         
         OutputStream os = exchange.getResponseBody();
