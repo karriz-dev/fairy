@@ -22,6 +22,9 @@ public class TransactionManager extends Thread
 	
 	public static final int MAX_SIZE = 5;
 	
+	private int difficulty = 10;
+	private double targetTime = 2.0;
+	
 	private TransactionManager()
 	{
 		try {
@@ -40,11 +43,7 @@ public class TransactionManager extends Thread
 		{
 			try {
 				
-				// 블록 생성 주기는 5분
-				Thread.sleep(30000);
-				
 				synchronized(this) {
-					// Transaction Queue를 가지고 Block을 생성
 					
 					List<Transaction> txlist = new ArrayList<Transaction>();
 					
@@ -55,15 +54,37 @@ public class TransactionManager extends Thread
 					
 					Block block = new Block(Network.getLocalIP(), txlist);
 					
-					if(block.Create())
+					double currentTime = block.isProof(difficulty);
+					
+					if(currentTime >= 0.0)
 					{
-						// 블록 생성 성공 시 전파
-						Linker.getInstance().broadcastingBlock(block);
+						/*
+						 * Proof-of-work
+						 * 
+						 * isProof(difficulty)
+						 * 
+						 * 1. 블록 생성시 hash(merkle + nonce) 가 target보다 작을 경우까지 반복 연산을 함
+						 * 
+						 * 2. target값 보다 작은 값이 등장하게 되면 블록이 검증되고 전파를 진행하게 된다.
+						 * 
+						 * 3. 채굴자의 address를 기록하여 보상을 지급한다.(future work)
+						 * 
+						 * */
 						
-						// 만약 보상을 지급하려고 하면 if를 넣어 생성 성공시 지급하면 됨
+						if(block.Create())
+						{
+							// 이미 존재 하는 블록이면 만들어 지지않고 넘어감
+							Linker.getInstance().broadcastingBlock(block);
+						}
 					}
-				}
-				
+					
+					if(currentTime < targetTime)
+					{
+						difficulty = difficulty + 1;
+					}else{
+						difficulty = difficulty - 1;
+					}
+				}		
 			}catch(Exception e) {
 				Debugger.Log(this, e);
 			}
