@@ -16,7 +16,7 @@ import fairy.valueobject.managers.transaction.Transaction;
 
 public class Block {
 	//Header
-	public String bid = null;				// 64자리 숫자
+	public String bid = null;
 	private String prevbid = null;
 	private Long timestamp = 0L;
 	private String merkleroot = null;
@@ -32,12 +32,46 @@ public class Block {
 	//Body
 	private List<Transaction> txlist = null;
 	
-	//File 
-	private File blockFile = null;
+	public Block(File blockFile){
+		Load(blockFile);
+	}
 	
 	public Block(String blockPath){
-		blockFile = new File(blockPath);
+		Load(new File(blockPath));
+	}
+
+	public Block(String creator, List<Transaction> txlist) {
+		this.creator = creator;
+		this.timestamp = System.currentTimeMillis();
+		this.merkleroot = MerkleTree.getMerkleRoot(txlist);
+		this.txlist = txlist;
 		
+		this.bid = Shield.SHA256(this.merkleroot);
+	}
+
+	public boolean Create() {
+		try {
+			File file = new File("assets/blocks/" + bid + ".block");
+			if(!file.exists())
+			{
+				if(file.createNewFile())
+				{
+					FileOutputStream output = new FileOutputStream(file);
+					output.write(this.getBytes());
+					output.flush();
+					output.close();
+					return true;
+				}
+				else return false;
+			}else return false;
+		}catch(Exception e) {
+			Debugger.Log(this, e);
+			return false;
+		}
+	}
+	
+	private boolean Load(File blockFile)
+	{
 		try {
 			FileInputStream fis = new FileInputStream(blockFile);
 			
@@ -158,35 +192,7 @@ public class Block {
 			}
 			
 			fis.close();
-		}catch(Exception e) {
-			Debugger.Log(this, e);
-		}
-	}
-
-	public Block(String creator, List<Transaction> txlist) {
-		this.creator = creator;
-		this.timestamp = System.currentTimeMillis();
-		this.merkleroot = MerkleTree.getMerkleRoot(txlist);
-		this.txlist = txlist;
-		
-		this.bid = Shield.SHA256(this.merkleroot);
-	}
-
-	public boolean Create() {
-		try {
-			File file = new File("assets/blocks/" + bid + ".block");
-			if(!file.exists())
-			{
-				if(file.createNewFile())
-				{
-					FileOutputStream output = new FileOutputStream(file);
-					output.write(this.getBytes());
-					output.flush();
-					output.close();
-					return true;
-				}
-				else return false;
-			}else return false;
+			return true;
 		}catch(Exception e) {
 			Debugger.Log(this, e);
 			return false;
