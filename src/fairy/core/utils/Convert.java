@@ -27,6 +27,11 @@ public class Convert {
 		return (byte) (b ? 1 : 0 );
 	}
 	
+	public static boolean byteToBoolean(byte b) {
+		if(b==0)return false;
+		else return true;
+	}
+	
 	public static byte[] transactionListToBytes(List<Transaction> txlist)
 	{
 		int offset = 0;
