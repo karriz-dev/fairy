@@ -23,7 +23,7 @@ public class TransactionManager extends Thread
 	public static final int MAX_SIZE = 5;
 	
 	private int difficulty = 10;
-	private double targetTime = 2.0;
+	private final double targetTime = 10.0;
 	
 	private TransactionManager()
 	{
@@ -39,6 +39,12 @@ public class TransactionManager extends Thread
 	@Override
 	public void run()
 	{
+		try {
+			Thread.sleep((long)targetTime);
+		}catch(Exception e) {
+			Debugger.Log(this, e);
+		}
+		
 		while(true)
 		{
 			try {
@@ -52,37 +58,44 @@ public class TransactionManager extends Thread
 						txlist.add(transactionQueue.poll());
 					}
 					
-					Block block = new Block(Network.getLocalIP(), txlist);
-					
-					double currentTime = block.isProof(difficulty);
-					
-					if(currentTime >= 0.0)
+					if(txlist.size() > 0)
 					{
-						/*
-						 * Proof-of-work
-						 * 
-						 * isProof(difficulty)
-						 * 
-						 * 1. 블록 생성시 hash(merkle + nonce) 가 target보다 작을 경우까지 반복 연산을 함
-						 * 
-						 * 2. target값 보다 작은 값이 등장하게 되면 블록이 검증되고 전파를 진행하게 된다.
-						 * 
-						 * 3. 채굴자의 address를 기록하여 보상을 지급한다.(future work)
-						 * 
-						 * */
+						Debugger.Log(this, "create challge using " + txlist.size() + "transactions..");
+						Block block = new Block(Network.getLocalIP(), txlist);
 						
-						if(block.Create())
+						double currentTime = block.isProof(difficulty);
+						
+						if(currentTime >= 0.0)
 						{
-							// 이미 존재 하는 블록이면 만들어 지지않고 넘어감
-							Linker.getInstance().broadcastingBlock(block);
+							/*
+							 * Proof-of-work
+							 * 
+							 * isProof(difficulty)
+							 * 
+							 * 1. 블록 생성시 hash(merkle + nonce) 가 target보다 작을 경우까지 반복 연산을 함
+							 * 
+							 * 2. target값 보다 작은 값이 등장하게 되면 블록이 검증되고 전파를 진행하게 된다.
+							 * 
+							 * 3. 채굴자의 address를 기록하여 보상을 지급한다.(future work)
+							 * 
+							 * */
+							
+							Debugger.Log(this, "block(" + block.bid +") is proved");
+							
+							if(block.Create())
+							{
+								// 이미 존재 하는 블록이면 만들어 지지않고 넘어감
+								Linker.getInstance().broadcastingBlock(block);
+								Debugger.Log(this, "block(" + block.bid +") is broadcasted");
+							}
 						}
-					}
-					
-					if(currentTime < targetTime)
-					{
-						difficulty = difficulty + 1;
-					}else{
-						difficulty = difficulty - 1;
+						
+						if(currentTime < targetTime)
+						{
+							difficulty = difficulty + 1;
+						}else{
+							difficulty = difficulty - 1;
+						}
 					}
 				}		
 			}catch(Exception e) {
