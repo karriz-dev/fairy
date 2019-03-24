@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 public class Handler {
+	public static final String GET = "GET";
+	public static final String POST = "POST";
+	
 	public void parseQuery(String query, Map<String, 
 			Object> parameters) throws UnsupportedEncodingException {
 
