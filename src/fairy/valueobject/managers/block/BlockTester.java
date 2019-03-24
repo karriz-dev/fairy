@@ -1,14 +1,19 @@
 package fairy.valueobject.managers.block;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import fairy.valueobject.managers.transaction.StatusTransaction;
 import fairy.valueobject.managers.transaction.Transaction;
 
 public class BlockTester {
+	private static double difficulty = 19.7;
+	private static double targetTime = 3.0;
+	
 	public static void main(String[] args) {
-		/*Queue<Transaction> txqueue = new LinkedList<Transaction>();
+		Queue<Transaction> txqueue = new LinkedList<Transaction>();
 		Transaction tx = new StatusTransaction();
 		
 		txqueue.add(tx);
@@ -16,21 +21,50 @@ public class BlockTester {
 		txqueue.add(tx);
 		txqueue.add(tx);
 		txqueue.add(tx);
-		txqueue.add(tx);
 		
-		Block block = new Block("127.0.0.1", txqueue);
+		List<Transaction> txlist = new ArrayList<Transaction>();
+		
+		while(!txqueue.isEmpty()) {
+			txlist.add(txqueue.poll());
+		}
+		
+		Block block = new Block("127.0.0.1", txlist);
 		block.setGenesis(true);
+		block.setStatus(0xB0000004);
 		
-		if(block.Create()) {
-			System.out.println(block.toString());
-			System.out.println(block.getFileBytes().length);
-			//String bid = block.bid;
-			//Block block2 = new Block("assets/blocks/" + bid + ".block");
-		
-			//byte[] read = block2.getFileBytes();
-		
-			//System.out.println("Block Size: " + read.length);
-		
-		}else System.out.println("블록 생성에 실패하였습니다. 이미 생성된 블록이 존재합니다.");*/
+		while(true)
+		{
+			double currentTime = block.isProof(difficulty);
+			
+			if(currentTime >= 0.0)
+			{
+				if(block.Create()) {
+					System.out.println("[CREATE]" + block.toString());
+					
+					Block block2 = new Block("assets/blocks/" + block.bid + ".block");
+					
+					System.out.println("[CREATE LOADED]" + block2.toString());
+
+				}else {
+					Block block2 = new Block("assets/blocks/" + block.bid + ".block");
+					
+					System.out.println("[LOADED]" + block2.toString());
+				}
+			}
+			
+			if(currentTime < targetTime)
+			{
+				difficulty = difficulty + 0.01;
+			}else{
+				difficulty = difficulty - 0.01;
+			}
+			
+			System.out.println("현재 난이도: " + difficulty);
+			try {
+				Thread.sleep(1500);
+			}catch(Exception e) {
+				
+			}
+		}
 	}
 }
