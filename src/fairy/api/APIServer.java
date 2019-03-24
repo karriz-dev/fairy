@@ -4,6 +4,10 @@ import java.net.InetSocketAddress;
 
 import com.sun.net.httpserver.HttpServer;
 
+import fairy.api.get.BlockListHandler;
+import fairy.api.post.TokenTransactionHandler;
+import fairy.core.utils.Debugger;
+
 public class APIServer {
 	public static APIServer instance = null;
 	
@@ -13,18 +17,16 @@ public class APIServer {
 	
 	private APIServer() {
 		try {
-			System.out.println("server open");
-			
 			httpServer = HttpServer.create(new InetSocketAddress(12075), 0);
 			
 			httpServer.createContext("/transaction/token",new TokenTransactionHandler());
 			
-			httpServer.createContext("/transaction/list",new TransactionListHandler());
+			httpServer.createContext("/block/list",new BlockListHandler());
 			
 			httpServer.setExecutor(null);
 			httpServer.start();
-			System.out.println("server start");
 			
+			Debugger.Log(this, "API server(" + 12075 + ") is started !!");
 		}catch(Exception e) {
 			
 		}
