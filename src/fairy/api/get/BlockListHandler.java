@@ -3,28 +3,37 @@ package fairy.api.get;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import fairy.api.Handler;
+import fairy.core.managers.ledger.LedgerManager;
 
 public class BlockListHandler extends Handler implements HttpHandler {
 
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
 		
-		String response = "";
+		Gson gson = new Gson();
 		
-		exchange.sendResponseHeaders(200, response.length());
-	    
+		String response = gson.toJson(LedgerManager.getInstance().getLatestBlock());
+		
+		System.out.println(response);
+		
 	    OutputStream os = exchange.getResponseBody();
 	    
 	    if(response != "")
 	    {
-	    	 os.write(response.toString().getBytes());
+	    	exchange.sendResponseHeaders(200, response.length());
+	    	os.write(response.toString().getBytes());
+	    }else
+	    {
+	    	response = "block is not load wating for create block..";
+	    	exchange.sendResponseHeaders(200, response.length());
+	    	os.write(response.toString().getBytes());
 	    }
 	    
 	    os.close();
 	}
-
 }

@@ -1,4 +1,4 @@
-package fairy.api;
+package fairy.api.post;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +11,7 @@ import java.util.Map;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+import fairy.api.Handler;
 import fairy.core.managers.key.KeyManager;
 import fairy.core.managers.transaction.TransactionManager;
 import fairy.core.net.communicator.Session;
