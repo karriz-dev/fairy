@@ -21,6 +21,8 @@ public class APIServer {
 			
 			httpServer.createContext("/transaction/token",new TokenTransactionHandler());
 			
+			httpServer.createContext("/transaction/list",new BlockListHandler());
+			
 			httpServer.createContext("/block/list",new BlockListHandler());
 			
 			httpServer.setExecutor(null);
