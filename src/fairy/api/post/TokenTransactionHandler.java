@@ -14,7 +14,7 @@ import com.sun.net.httpserver.HttpHandler;
 import fairy.api.Handler;
 import fairy.core.managers.key.KeyManager;
 import fairy.core.managers.transaction.TransactionManager;
-import fairy.core.net.communicator.Session;
+import fairy.core.net.communicator.Linker;
 import fairy.valueobject.managers.transaction.TokenTransaction;
 import fairy.valueobject.managers.transaction.Transaction;
 
@@ -52,7 +52,6 @@ public class TokenTransactionHandler extends Handler implements HttpHandler {
 	            	}
 	            }
 	            
-	            
 	            System.out.println("============================= API HANDLER WORKED !! =============================");
 	            System.out.println("FTXID: " + ftxid);
 	            System.out.println("FTXADDRESS: " + ftxaddress);            
@@ -64,26 +63,28 @@ public class TokenTransactionHandler extends Handler implements HttpHandler {
 	            KeyPair pair = KeyManager.getInstance().getKeyPair();
 	            
 	            tx.setSignature(TransactionManager.getInstance().Sign(tx.getBytes(), pair.getPrivate()));
+	            tx.setPublicKey(pair.getPublic());
 	            
-	            response = tx.toString();
-	            
-	            Session.getInstance().broadcastingTransaction(tx);
-	            
-	    		exchange.sendResponseHeaders(200, response.length());
+	            if(Linker.getInstance().broadcastingTransactrionUsingSerialization(tx))
+	            {
+	            	response = "Transaction was broadcasted !! \r\n" + tx.toString();
+		            
+		    		exchange.sendResponseHeaders(200, response.length());
+	            }else
+	            {
+	            	response = "Transaction wasn't broadcasted !! \r\n" + tx.toString();
+	            	exchange.sendResponseHeaders(200, response.length());
+	            }
 	        }
 	        else
 	        {
-	        	exchange.sendResponseHeaders(500, response.length());
-	        
-	        	response = "transaction not send... check the arguments !!";
+	        	exchange.sendResponseHeaders(400, 0);
+	        	exchange.close();
 	        }
 	        
 	        OutputStream os = exchange.getResponseBody();
 	        
-	        if(response != "")
-	        {
-	        	 os.write(response.toString().getBytes());
-	        }
+	        os.write(response.toString().getBytes());
 	        
 	        os.close();
 		}
