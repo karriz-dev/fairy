@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import fairy.core.managers.ledger.LedgerManager;
 import fairy.core.net.communicator.Linker;
 import fairy.core.utils.Debugger;
 import fairy.core.utils.Network;
@@ -73,13 +74,20 @@ public class TransactionManager extends Thread
 							 * 
 							 * */
 							
-							Debugger.Log(this, "block(" + block.bid +") is proved");
+							Debugger.Log(this, "block(" + block.getBid() +") is proved");
+							
+							if(!block.isGenesis())
+							{
+								// Genesis Block이 아닐경우에는 이전 블록 해시 ID를 기록함
+								LedgerManager.getInstance().setPrevBlockID(block);
+							}
 							
 							if(block.Create())
 							{
 								// 이미 존재 하는 블록이면 만들어 지지않고 넘어감
 								Linker.getInstance().broadcastingBlock(block);
-								Debugger.Log(this, "block(" + block.bid +") is broadcasted");
+								Debugger.Log(this, "block(" + block.getBid() +") is broadcasted");
+								Debugger.Log(this, block.toString());
 							}
 						}
 						
