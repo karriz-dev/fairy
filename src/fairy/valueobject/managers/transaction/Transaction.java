@@ -1,9 +1,14 @@
 package fairy.valueobject.managers.transaction;
 
+import java.io.Serializable;
+import java.security.PublicKey;
+
 import fairy.core.net.communicator.Session;
 import fairy.core.utils.Convert;
 
-public abstract class Transaction {
+public abstract class Transaction implements Serializable {
+	
+	private static final long serialVersionUID = 757735063156842L;
 	
 	protected String tid = null;
 	private short type = 0x01;
@@ -16,6 +21,7 @@ public abstract class Transaction {
 	protected byte[] datas = null;
 	
 	private byte[] signature = null;
+	protected PublicKey key = null;
 	
 	public Transaction(short type)
 	{
@@ -43,6 +49,10 @@ public abstract class Transaction {
 		this.signature = sign;
 	}
 	
+	public void setPublicKey(PublicKey key) {
+		this.key = key;
+	}
+	
 	public byte[] getSignature() {
 		return signature;
 	}
@@ -58,6 +68,10 @@ public abstract class Transaction {
 		System.arraycopy(body, 0, result, header.length, body.length);
 		
 		return result;
+	}
+	
+	public PublicKey getPublicKey() {
+		return this.key;
 	}
 	
 	private byte[] getHeaderBytes() {
