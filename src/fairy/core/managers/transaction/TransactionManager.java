@@ -39,25 +39,18 @@ public class TransactionManager extends Thread
 	@Override
 	public void run()
 	{
-		try {
-			Thread.sleep((long)targetTime);
-		}catch(Exception e) {
-			Debugger.Log(this, e);
-		}
-		
 		while(true)
 		{
 			try {
+				List<Transaction> txlist = new ArrayList<Transaction>();
 				
+				while(!transactionQueue.isEmpty())
+				{
+					txlist.add(transactionQueue.poll());
+				}
+			
 				synchronized(this) {
-					
-					List<Transaction> txlist = new ArrayList<Transaction>();
-					
-					while(!transactionQueue.isEmpty())
-					{
-						txlist.add(transactionQueue.poll());
-					}
-					
+						
 					if(txlist.size() > 0)
 					{
 						Debugger.Log(this, "create challge using " + txlist.size() + "transactions..");
@@ -98,6 +91,7 @@ public class TransactionManager extends Thread
 						}
 					}
 				}		
+				
 			}catch(Exception e) {
 				Debugger.Log(this, e);
 			}
