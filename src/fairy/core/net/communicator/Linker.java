@@ -3,6 +3,7 @@ package fairy.core.net.communicator;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -115,6 +116,25 @@ public class Linker extends Thread{
 			Debugger.Log(this, e);
 			return null;
 		}
+	}
+	
+	public boolean broadcastingTransactrionUsingSerialization(Transaction tx)
+	{
+		for(Socket clnt: sockList)
+		{
+			try {
+				ObjectOutputStream out = new ObjectOutputStream(clnt.getOutputStream());
+				
+				out.writeObject(tx);
+			}catch(Exception e) {
+				Debugger.Log(this, e);
+				try {
+					clnt.close();
+				} catch (IOException ioe) {}
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public boolean broadcastingTransactrion(Transaction tx)

@@ -1,6 +1,7 @@
 package fairy.core.net.communicator;
 
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
@@ -42,11 +43,20 @@ public class Node extends Thread {
 		{
 			try {
 				
-				int lastestLength = 0;
+				//int lastestLength = 0;
 				
 				if(nodeInputStream.available() > 0)
 				{
-					int[] lengthList = new int[] {32, 2, 8, 4, -1, 4, -1};
+					ObjectInputStream in = new ObjectInputStream(nodeInputStream);
+					Transaction tx = (Transaction)in.readObject();
+					
+					if(TransactionManager.getInstance().Push(tx, tx.getPublicKey())) {	
+						System.out.println("VALID TRANSACTION RECV:" + tx.toString());
+					}else {
+						System.out.println("INVALID TRANSACTION RECV:" + tx.toString());
+					}
+					
+					/*int[] lengthList = new int[] {32, 2, 8, 4, -1, 4, -1};
 					
 					byte[][] datas = new byte[8][];
 
@@ -93,9 +103,9 @@ public class Node extends Thread {
 					case TransactionType.STATUS:
 						transaction = new StatusTransaction(datas);
 						break;
-					}
+					}*/
 					
-					//TransactionManager.getInstance().Push(transaction)3
+					//TransactionManager.getInstance().Push(transaction);
 				}
 			} catch (Exception e) {
 				Debugger.Log(this, e);
