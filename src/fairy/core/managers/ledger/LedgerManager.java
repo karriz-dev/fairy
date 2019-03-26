@@ -22,6 +22,11 @@ public class LedgerManager {
 		 * */
 	}
 	
+	public void setPrevBlockID(Block currentBlock)
+	{
+		currentBlock.setBid(getLatestBlock().getBid());
+	}
+	
 	public Block getLatestBlock()
 	{
 		try {
