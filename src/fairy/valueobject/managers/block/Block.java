@@ -16,7 +16,7 @@ import fairy.valueobject.managers.transaction.Transaction;
 
 public class Block {
 	//Header
-	public String bid = null;
+	private String bid = null;
 	private String prevbid = null;
 	private Long timestamp = 0L;
 	private String merkleroot = null;
@@ -199,6 +199,22 @@ public class Block {
 		}
 	}
 	
+	public String getBid() {
+		return bid;
+	}
+
+	public void setBid(String bid) {
+		this.bid = bid;
+	}
+
+	public boolean isGenesis() {
+		return isGenesis;
+	}
+
+	public void setPrevbid(String prevbid) {
+		this.prevbid = prevbid;
+	}
+
 	public double getBalance() {
 		double balance = 0.0;
 		for(Transaction tx: txlist)
