@@ -38,18 +38,7 @@ public class BlockTester {
 			
 			if(currentTime >= 0.0)
 			{
-				if(block.Create()) {
-					System.out.println("[CREATE]" + block.toString());
-					
-					Block block2 = new Block("assets/blocks/" + block.bid + ".block");
-					
-					System.out.println("[CREATE LOADED]" + block2.toString());
-
-				}else {
-					Block block2 = new Block("assets/blocks/" + block.bid + ".block");
-					
-					System.out.println("[LOADED]" + block2.toString());
-				}
+				// 블록 파일 생성 !
 			}
 			
 			if(currentTime < targetTime)

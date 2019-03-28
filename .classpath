@@ -8,5 +8,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="tester"/>
 	<classpathentry kind="src" path="assets"/>
+	<classpathentry kind="lib" path="C:/Users/USER/Downloads/gson-2.8.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
