@@ -20,8 +20,6 @@ public class BlockListHandler extends Handler implements HttpHandler {
 		
 			String response = gson.toJson(LedgerManager.getInstance().getLatestBlock());
 			
-			System.out.println(response);
-			
 		    OutputStream os = exchange.getResponseBody();
 		    
 		    if(response != "")
