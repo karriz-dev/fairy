@@ -57,6 +57,10 @@ public abstract class Transaction implements Serializable {
 		return signature;
 	}
 	
+	public String getTransactionID() {
+		return this.tid;
+	}
+	
 	public byte[] getBytes() {
 		byte[] header = getHeaderBytes();
 		byte[] body = getDatasBytes();

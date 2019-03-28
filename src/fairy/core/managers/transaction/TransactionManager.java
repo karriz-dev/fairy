@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import fairy.core.managers.block.BlockManager;
 import fairy.core.managers.ledger.LedgerManager;
 import fairy.core.net.communicator.Linker;
 import fairy.core.utils.Debugger;
@@ -61,33 +62,17 @@ public class TransactionManager extends Thread
 						
 						if(currentTime >= 0.0)
 						{
-							/*
-							 * Proof-of-work
-							 * 
-							 * isProof(difficulty)
-							 * 
-							 * 1. 블록 생성시 hash(merkle + nonce) 가 target보다 작을 경우까지 반복 연산을 함
-							 * 
-							 * 2. target값 보다 작은 값이 등장하게 되면 블록이 검증되고 전파를 진행하게 된다.
-							 * 
-							 * 3. 채굴자의 address를 기록하여 보상을 지급한다.(future work)
-							 * 
-							 * */
-							
 							Debugger.Log(this, "block(" + block.getBid() +") is proved");
 							
 							if(!block.isGenesis())
 							{
-								// Genesis Block이 아닐경우에는 이전 블록 해시 ID를 기록함
-								LedgerManager.getInstance().setPrevBlockID(block);
-							}
-							
-							if(block.Create())
-							{
-								// 이미 존재 하는 블록이면 만들어 지지않고 넘어감
-								Linker.getInstance().broadcastingBlock(block);
-								Debugger.Log(this, "block(" + block.getBid() +") is broadcasted");
-								Debugger.Log(this, block.toString());
+								if(LedgerManager.getInstance().generateBlock(block))
+								{
+									// 이미 존재 하는 블록이면 만들어 지지않고 넘어감
+									Linker.getInstance().broadcastingBlock(block);
+									Debugger.Log(this, "block(" + block.getBid() +") is broadcasted");
+									Debugger.Log(this, block.toString());
+								}
 							}
 						}
 						
