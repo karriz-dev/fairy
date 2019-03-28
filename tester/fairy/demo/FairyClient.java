@@ -21,6 +21,9 @@ public class FairyClient {
 		
 		// BlockManager Call
 		BlockManager.getInstance();
+		
+		// LedgerManager Call
+		LedgerManager.getInstance();
 						
 		// API SERVER OPEN
 		APIServer.getInstance();
