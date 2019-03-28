@@ -63,7 +63,10 @@ public class Node extends Thread {
 					{
 						Block block = (Block)object;
 						
-						Debugger.Log(this, "BLOCK RECV: " + block.toString());
+						if(LedgerManager.getInstance().generateBlock(block))
+						{
+							Debugger.Log(this, "BLOCK RECV: " + block.toString());
+						}
 					}
 				}
 			} catch (Exception e) {
