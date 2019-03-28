@@ -3,11 +3,11 @@ package fairy.valueobject.managers.transaction;
 public class TransactionOrderConfirm extends Transaction{
 	
 	
-	String targetTransactionID = null;
-	String buyerAddress = null;
-	double totalHydrogenCount = 0.0;
-	double value = 0.0;
-	String sellerAddress = null;
+	private String targetTransactionID = null;
+	private String buyerAddress = null;
+	private double totalHydrogenCount = 0.0;
+	private double value = 0.0;
+	private String sellerAddress = null;
 	
 	public TransactionOrderConfirm() {
 		super(TransactionType.ORDER_CONFIRM);
