@@ -84,7 +84,7 @@ public class LedgerManager{
 		
 		currentBlock.setHeight(latestBlock.getHeight() + 1);
 		
-		return latestBlock.getHeight();
+		return currentBlock.getHeight();
 	}
 	
 	public Block getLatestBlock()
