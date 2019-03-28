@@ -65,13 +65,13 @@ public class Linker extends Thread{
 				
 				if(!Network.getLocalIP().equals(ipAddress)) {
 					
-					Debugger.Log(this, "send connection request to " + ipAddress);
+					Debugger.Log(this, "send connection request to " + ipAddress, 1);
 					
 					try {
 						Socket socket = new Socket();
 						socket.connect(new InetSocketAddress(ipAddress, 10080), 35);
 						sockList.add(socket);
-						Debugger.Log(this, "success connection to " + ipAddress);
+						Debugger.Log(this, "success connection to " + ipAddress, 1);
 					}catch(Exception e) {
 						try {
 							Thread.sleep(100);
@@ -84,13 +84,13 @@ public class Linker extends Thread{
 			}else{
 				if(!Network.getLocalIP().equals(ipAddress)) {
 					
-					Debugger.Log(this, "send connection request to " + ipAddress);
+					Debugger.Log(this, "send connection request to " + ipAddress, 1);
 					
 					try {
 						Socket socket = new Socket();
 						socket.connect(new InetSocketAddress(ipAddress, 10080), 3000);
 						sockList.add(socket);
-						Debugger.Log(this, "success connection to " + ipAddress);
+						Debugger.Log(this, "success connection to " + ipAddress, 1);
 						isBoosted = false;
 					}catch(Exception e) {
 						try {
@@ -142,7 +142,8 @@ public class Linker extends Thread{
 		for(Socket clnt: sockList)
 		{
 			try {
-				clnt.getOutputStream().write(tx.getBytes());
+				ObjectOutputStream oos = new ObjectOutputStream(clnt.getOutputStream());
+				oos.writeObject(tx);
 			}catch(Exception e) {
 				Debugger.Log(this, e);
 				try {
@@ -159,7 +160,8 @@ public class Linker extends Thread{
 		for(Socket clnt: sockList)
 		{
 			try {
-				clnt.getOutputStream().write(block.getBytes());
+				ObjectOutputStream oos = new ObjectOutputStream(clnt.getOutputStream());
+				oos.writeObject(block);
 			}catch(Exception e) {
 				Debugger.Log(this, e);
 				try {
