@@ -2,50 +2,113 @@ package fairy.core.managers.ledger;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import fairy.core.managers.block.BlockManager;
 import fairy.core.utils.Debugger;
 import fairy.valueobject.managers.block.Block;
+import fairy.valueobject.managers.transaction.TokenTransaction;
+import fairy.valueobject.managers.transaction.Transaction;
 
-public class LedgerManager {
-	private static LedgerManager instance = null;
+public class LedgerManager{
 	
+	private Long currentBlockHeight = 0L;
+
+	private static LedgerManager instance = null;
+
 	private LedgerManager()
 	{
-		/*
-		 * 	LedgerManager
-		 * 
-		 *  렛저 관리자는 글로벌한 상태(BlockHeight)를 가지고 있는다.
-		 * 
-		 *  모든 노드들의 BlockHeight를 계속해서 수신받다가 BlockHeight가 새로 갱신되는 순간 
-		 *  
-		 *  각 노드들은 렛저를 동기화하는 작업을 진행한다.
-		 * */
+		if(generateGenesisBlock())
+		{
+			Debugger.Log(this, "genesis block is generate !!");
+		}
+	}
+
+	public boolean generateBlock(Block block)
+	{
+		if(setPrevBlockID(block) > 0)
+		{
+			if(block.getHeight() > currentBlockHeight)
+			{
+				if(BlockManager.getInstance().Generate(block))
+				{
+					currentBlockHeight = currentBlockHeight + 1;
+					return true;
+				}
+				else return false;
+			}
+			else return false;
+		}
+		else return false;
 	}
 	
-	public void setPrevBlockID(Block currentBlock)
+	private boolean generateGenesisBlock()
 	{
-		currentBlock.setBid(getLatestBlock().getBid());
+		try {
+			List<Transaction> txlist = new ArrayList<Transaction>();
+			
+			Map<String, Double> tokenMap = new HashMap<String, Double>();
+			tokenMap.put("0xGenesisTransaction", 100810080.0);
+			
+			Transaction tx = new TokenTransaction("3A95A12DDB17FC89DC47DE1D24D975FEDCC99B7E0FA091E5CAE3AD5E3B9B0062", "1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX", tokenMap);
+			
+			txlist.add(tx);
+			
+			Block block = new Block("GENESIS BLOCK", txlist);
+			block.setGenesis(true);
+			block.setStatus(0xB0000004);
+			
+			return true;
+		}catch(Exception e) {
+			Debugger.Log(this, e);
+			return false;
+		}	
+	}
+	
+	public long getCurrentBlockHeight()
+	{
+		return this.getCurrentBlockHeight();
+	}
+	
+	private Long setPrevBlockID(Block currentBlock)
+	{
+		Block latestBlock = getLatestBlock();
+		
+		Debugger.Log(this, "PREV BLOCK ID: " + latestBlock.getBid());
+		
+		currentBlock.setPrevBid(getLatestBlock().getBid());
+		
+		currentBlock.setHeight(latestBlock.getHeight() + 1);
+		
+		return latestBlock.getHeight();
 	}
 	
 	public Block getLatestBlock()
 	{
 		try {
 			File fl = new File("assets/blocks/");
+			
 		    File[] files = fl.listFiles(new FileFilter() {          
 		        public boolean accept(File file) {
 		            return file.isFile();
 		        }
 		    });
+		    
 		    long lastMod = Long.MIN_VALUE;
-		    File choice = null;
+		    
+		    File choice = null
+		    		;
 		    for (File file : files) {
 		        if (file.lastModified() > lastMod) {
 		            choice = file;
 		            lastMod = file.lastModified();
 		        }
 		    }
-		    
-			return new Block(choice);
+		 
+			return BlockManager.getInstance().getBlock(choice);
 		}catch(Exception e) {
 			Debugger.Log(this, e);
 			return null;
