@@ -58,10 +58,11 @@ public class LedgerManager{
 			txlist.add(tx);
 			
 			Block block = new Block("GENESIS BLOCK", txlist);
+			
 			block.setGenesis(true);
 			block.setStatus(0xB0000004);
-			
-			return true;
+
+			return BlockManager.getInstance().Generate(block);
 		}catch(Exception e) {
 			Debugger.Log(this, e);
 			return false;
