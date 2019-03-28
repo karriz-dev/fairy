@@ -5,12 +5,11 @@ import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import fairy.core.managers.ledger.LedgerManager;
 import fairy.core.managers.transaction.TransactionManager;
-import fairy.core.utils.Convert;
 import fairy.core.utils.Debugger;
-import fairy.valueobject.managers.transaction.StatusTransaction;
+import fairy.valueobject.managers.block.Block;
 import fairy.valueobject.managers.transaction.Transaction;
-import fairy.valueobject.managers.transaction.TransactionType;
 
 public class Node extends Thread {
 	private Socket nodeSock = null;
@@ -42,70 +41,30 @@ public class Node extends Thread {
 		while(!isDead)
 		{
 			try {
-				
-				//int lastestLength = 0;
-				
 				if(nodeInputStream.available() > 0)
 				{
 					ObjectInputStream in = new ObjectInputStream(nodeInputStream);
-					Transaction tx = (Transaction)in.readObject();
 					
-					if(TransactionManager.getInstance().Push(tx, tx.getPublicKey())) {	
-						System.out.println("VALID TRANSACTION RECV:" + tx.toString());
-					}else {
-						System.out.println("INVALID TRANSACTION RECV:" + tx.toString());
-					}
+					Object object = in.readObject();
 					
-					/*int[] lengthList = new int[] {32, 2, 8, 4, -1, 4, -1};
+					System.out.println(object.getClass().getName());
 					
-					byte[][] datas = new byte[8][];
-
-					for(int i = 0 ; i < 7; i++)
+					if(object.getClass().getName().contains("transaction"))
 					{
-						int count = 0;
+						Transaction tx = (Transaction)object;
 						
-						if(lengthList[i] == -1)
-						{
-							datas[i] = new byte[lastestLength];
-							
-							while(count < lastestLength)
-							{
-								int r = nodeInputStream.read();
-								if(r != -1) {
-									datas[i][count] = (byte)r;
-									count++;
-								}
-							}
-						}
-						else
-						{
-							datas[i] = new byte[lengthList[i]];
-
-							while(count < lengthList[i])
-							{
-								int r = nodeInputStream.read();
-								if(r != -1) {
-									datas[i][count] = (byte)r;
-									count++;
-								}
-							}
-
-							if(lengthList[i+1] == -1) {
-								lastestLength = Convert.byteArrayToInt(datas[i]);
-							}
+						if(TransactionManager.getInstance().Push(tx, tx.getPublicKey())) {	
+							System.out.println("VALID TRANSACTION RECV:" + tx.toString());
+						}else {
+							System.out.println("INVALID TRANSACTION RECV:" + tx.toString());
 						}
 					}
-
-					Transaction transaction = null;
-					
-					switch(Convert.bytesToShort(datas[1]))
+					else
 					{
-					case TransactionType.STATUS:
-						transaction = new StatusTransaction(datas);
-						break;
-					}*/
-					
-					//TransactionManager.getInstance().Push(transaction);
+						Block block = (Block)object;
+						
+						Debugger.Log(this, "BLOCK RECV: " + block.toString());
+					}
 				}
 			} catch (Exception e) {
 				Debugger.Log(this, e);
