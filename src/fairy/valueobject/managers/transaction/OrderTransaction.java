@@ -11,10 +11,6 @@ public class OrderTransaction extends Transaction{
 		super(TransactionType.ORDER);
 	}
 	
-	public OrderTransaction(byte[][] stream) {
-		super(stream);
-	}
-
 	@Override
 	protected byte[] getDatasBytes() {
 		
