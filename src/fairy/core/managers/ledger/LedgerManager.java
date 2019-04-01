@@ -35,6 +35,7 @@ public class LedgerManager{
 			{
 				if(BlockManager.getInstance().Generate(block))
 				{
+					block.setStatus(0xB0000002);
 					currentBlockHeight = currentBlockHeight + 1;
 					return true;
 				}
