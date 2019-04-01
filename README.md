@@ -6,6 +6,7 @@
 
 ## Abstract
 
+<img src="http://selab.sogang.ac.kr/img/fairy/what.png">  
 
 ## REST Application Programming Interface
 
