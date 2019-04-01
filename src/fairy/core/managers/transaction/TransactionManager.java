@@ -66,6 +66,7 @@ public class TransactionManager extends Thread
 							
 							if(!block.isGenesis())
 							{
+								Debugger.Log(this, "queue size: " + transactionQueue);
 								if(LedgerManager.getInstance().generateBlock(block))
 								{
 									// 이미 존재 하는 블록이면 만들어 지지않고 넘어감
