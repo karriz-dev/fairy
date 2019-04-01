@@ -16,6 +16,11 @@ public class BlockListHandler extends Handler implements HttpHandler {
 	public void handle(HttpExchange exchange) throws IOException {
 		if(exchange.getRequestMethod().toUpperCase().equals(Handler.GET))
 		{
+			exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+			exchange.getResponseHeaders().set("Access-Control-Max-Age", "3600");
+			exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "x-requested-with");
+			exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+
 			Gson gson = new Gson();
 		
 			String response = gson.toJson(LedgerManager.getInstance().getLatestBlock());

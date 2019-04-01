@@ -23,6 +23,11 @@ public class TokenTransactionHandler extends Handler implements HttpHandler {
 	public void handle(HttpExchange exchange) throws IOException {
 		if(exchange.getRequestMethod().toUpperCase().equals(Handler.POST))
 		{
+			exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+			exchange.getResponseHeaders().set("Access-Control-Max-Age", "3600");
+			exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "x-requested-with");
+			exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+
 			Map<String, Object> parameters = new HashMap<String, Object>();
 	        InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), "utf-8");
 	        BufferedReader br = new BufferedReader(isr);
