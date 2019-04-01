@@ -61,6 +61,10 @@ public abstract class Transaction implements Serializable {
 		return this.tid;
 	}
 	
+	public boolean isMatched(short type) {
+		return this.type == type;
+	}
+	
 	public byte[] getBytes() {
 		byte[] header = getHeaderBytes();
 		byte[] body = getDatasBytes();
