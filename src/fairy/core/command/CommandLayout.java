@@ -8,17 +8,13 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 import fairy.core.managers.key.KeyManager;
-import fairy.core.net.communicator.Linker;
 import fairy.core.utils.Debugger;
-import fairy.valueobject.managers.transaction.StatusTransaction;
-import fairy.valueobject.managers.transaction.Transaction;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
 
 public class CommandLayout extends JFrame {
 	private JTextField textField = null;
@@ -128,12 +124,13 @@ public class CommandLayout extends JFrame {
 			switch(command)
 			{
 			case CommandList.TRANSACTION_MAKE:
-				Transaction tx = new StatusTransaction();
+				return CommandList.TRANSACTION_MAKE_SUCCESS;
+				/*Transaction tx = new StatusTransaction();
 				if(Linker.getInstance().broadcastingTransactrion(tx)) {
 					return CommandList.TRANSACTION_MAKE_SUCCESS;
 				}else {
 					return CommandList.TRANSACTION_MAKE_FAILED;
-				}
+				}*/
 			case CommandList.WALLET_GENERATOR:
 				addMessage("[Fairy]: Wallet Generator Load...");
 				if(args == null) {

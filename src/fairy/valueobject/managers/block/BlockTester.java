@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import fairy.valueobject.managers.transaction.StatusTransaction;
 import fairy.valueobject.managers.transaction.Transaction;
 
 public class BlockTester {
@@ -14,13 +13,9 @@ public class BlockTester {
 	
 	public static void main(String[] args) {
 		Queue<Transaction> txqueue = new LinkedList<Transaction>();
-		Transaction tx = new StatusTransaction();
+		//Transaction tx = new StatusTransaction();
 		
-		txqueue.add(tx);
-		txqueue.add(tx);
-		txqueue.add(tx);
-		txqueue.add(tx);
-		txqueue.add(tx);
+		//txqueue.add(tx);
 		
 		List<Transaction> txlist = new ArrayList<Transaction>();
 		
