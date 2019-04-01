@@ -1,18 +1,7 @@
 package fairy.valueobject.managers.transaction;
 
 public class TransactionType {
-	/*==================================== 0xe ======================================*/
-	/*
-	 * 		NAME		 : STATUS 
-	 * 		DESCRIPTION  : 테스트 트랜잭션
-	 * 
-	 *  	@param
-	 *  
-	 *  	-
-	 */
-	public static final short STATUS = (short) 0xE001;
-	/*==================================== 0xe ======================================*/
-	
+
 	/*==================================== 0xa ======================================*/
 	/*
 	 * 		NAME			: TOKEN
