@@ -107,13 +107,17 @@ public class Block implements Serializable {
 			
 			if(resultDecimal.compareTo(target) < 1)
 			{
-				System.out.println("elapsed time: " + ((System.currentTimeMillis()-start) /1000.0) + " s");
+				Debugger.Log(this, "elapsed time: " + ((System.currentTimeMillis()-start) /1000.0) + " s");
 				return ((System.currentTimeMillis()-start) /1000.0);
 			}else { 
-				System.out.println("NONCE("+nonce +"): " + resultDecimal.toString());
+				Debugger.Log(this, "NONCE("+nonce +"): " + resultDecimal.toString(), 1);
 				nonce = nonce + 1;
 			}
 		}
+	}
+	
+	public List<Transaction> getTransactionList(){
+		return this.txlist;
 	}
 	
 	@Override
