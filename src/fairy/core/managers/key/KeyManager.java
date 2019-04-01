@@ -7,20 +7,18 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.Signature;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import fairy.core.security.Shield;
 import fairy.core.utils.Debugger;
-import fairy.valueobject.managers.transaction.Transaction;
+import fairy.valueobject.managers.key.WalletKey;
 
 public class KeyManager 
 {
-	private Map<PrivateKey, PublicKey> keypairMap = null;
+	private List<WalletKey> wallet = null;
 	
 	private static KeyManager instance = null;
 	
@@ -28,7 +26,7 @@ public class KeyManager
 	
 	private KeyManager()
 	{
-		keypairMap = new HashMap<PrivateKey, PublicKey>();
+		wallet = new ArrayList<WalletKey>();
 	}
 	
 	private KeyManager(String walletPath)
@@ -37,16 +35,17 @@ public class KeyManager
 		
 		if(walletPath != null)
 		{
-			File wallet = new File(walletPath);
-			if(wallet.exists())
+			File walletFile = new File(walletPath);
+			if(walletFile.exists())
 			{
 				try {
-					FileInputStream walletData = new FileInputStream(wallet);
+					FileInputStream walletData = new FileInputStream(walletFile);
 					ObjectInputStream object = new ObjectInputStream(walletData);
 					
-					keypairMap = (HashMap<PrivateKey, PublicKey>)object.readObject();
+					this.wallet = (List<WalletKey>)object.readObject();
+					
 				}catch(Exception e) {
-					keypairMap = null;
+					this.wallet = null;
 				}	
 			}
 		}
@@ -79,7 +78,9 @@ public class KeyManager
 			
 			FileOutputStream output = new FileOutputStream(file);
 			ObjectOutputStream object = new ObjectOutputStream(output);
-			object.writeObject(keypairMap);
+			
+			object.writeObject(this.wallet);
+			
 			object.flush();
 			object.close();
 			output.close();
@@ -96,7 +97,7 @@ public class KeyManager
 	        
 	        KeyPair pair = KeyPairGenerator.getInstance("EC").generateKeyPair();
 	        
-	        keypairMap.put(pair.getPrivate(), pair.getPublic());
+	        wallet.add(new WalletKey(pair, Shield.Address(pair.getPublic())));
 	        
 	        return Save();
 		}catch(Exception e) {
@@ -114,7 +115,7 @@ public class KeyManager
 				
 				KeyPair pair = KeyPairGenerator.getInstance("EC").generateKeyPair();
 				
-				keypairMap.put(pair.getPrivate(), pair.getPublic());
+				wallet.add(new WalletKey(pair, Shield.Address(pair.getPublic())));
 			}
 	        return Save();
 		}catch(Exception e) {
@@ -123,39 +124,17 @@ public class KeyManager
 		}
 	}	
 	
-	public KeyPair getKeyPair() {
+	public WalletKey Get()
+	{
 		try {
-			Random r = new Random();
-			int size = keypairMap.size();
-			int count = 0;
-			int rand = r.nextInt(size);
+			int size = wallet.size();
+			
 			if(size > 0)
 			{
-				for(PrivateKey key: keypairMap.keySet())
-				{
-					if(count == rand)
-						return new KeyPair(keypairMap.get(key), key);
-					count++;
-				}
-			}
-			return null;
-		}catch(Exception e) {
-			return null;
-		}
-	}
-	
-	public KeyPair getKeyPair(int index) {
-		try {
-			int size = keypairMap.size();
-			int count = 0;
-			if(size > 0)
-			{
-				for(PrivateKey key: keypairMap.keySet())
-				{
-					if(count == index)
-						return new KeyPair(keypairMap.get(key), key);
-					count++;
-				}
+				Random r = new Random();
+				int rand = r.nextInt(size);
+				
+				return wallet.get(rand);
 			}
 			return null;
 		}catch(Exception e) {
@@ -164,7 +143,7 @@ public class KeyManager
 	}
 	
 	public int Count() {
-		return keypairMap.size();
+		return wallet.size();
 	}
 	
 	@Override
@@ -173,10 +152,11 @@ public class KeyManager
 		String result = "[Fairy]: wallet(" + path + ")'s list\r\n";
 		
 		int count = 1;
-		for( PrivateKey key : keypairMap.keySet() ){
-            result += String.format("[Index " +count+" ]\r\n" + "Private Key: %s\r\n" + "Pulbic Key: %s", key, keypairMap.get(key)) + "\r\n";
+		for(WalletKey key: wallet)
+		{
+			result += key.toString() +"\r\n";
             count++;
-        }
+		}
 		
 		result += "=========================================================================================================\r\n";
 		result += "[Fairy]: wallet(" + path + ")'s list\r\n";
