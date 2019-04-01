@@ -1,6 +1,6 @@
 # Fairy Project
 
-## Logo
+## Icon
 
 <img src="http://selab.sogang.ac.kr/img/fairy/logo.png" width="64px" height="64px">
 
