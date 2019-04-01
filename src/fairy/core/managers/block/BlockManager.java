@@ -35,6 +35,9 @@ public class BlockManager extends Thread {
 	{
 		try {
 			File file = new File("assets/blocks/" + block.getBid() + ".block");
+			
+			block.setStatus(0xB0000001);
+			
 			if(!file.exists())
 			{
 				if(file.createNewFile())
