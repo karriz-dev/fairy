@@ -87,11 +87,31 @@ public class LedgerManager{
 		return currentBlock.getHeight();
 	}
 	
+	public List<Block> getBlockList()
+	{
+		List<Block> blockList = new ArrayList<Block>();
+		
+		try {
+			File folder = new File("assets/blocks/");
+
+			for (final File fileEntry : folder.listFiles()) {
+		        if (!fileEntry.isDirectory()) {
+		        	blockList.add(BlockManager.getInstance().getBlock(fileEntry));
+		        }
+		    }
+			
+			return blockList;
+		}catch(Exception e) {
+			Debugger.Log(this, e);
+			return null;
+		}
+	}
+	
 	public Block getLatestBlock()
 	{
 		try {
 			File fl = new File("assets/blocks/");
-			
+						
 		    File[] files = fl.listFiles(new FileFilter() {          
 		        public boolean accept(File file) {
 		            return file.isFile();
