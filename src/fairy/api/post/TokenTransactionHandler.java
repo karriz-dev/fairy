@@ -40,8 +40,9 @@ public class TokenTransactionHandler extends Handler implements HttpHandler {
 	        {
 	        	Map<String, Double> outputList = new HashMap<String, Double>();
 	            
-	        	String ftxid = "";
-	        	String ftxaddress = "";
+	        	String ftxid = null;
+	        	String ftxaddress = null;
+	        	String merkleroot = null;
 	        	
 	            for (String key : parameters.keySet()) {
 	            	switch(key){
@@ -51,18 +52,23 @@ public class TokenTransactionHandler extends Handler implements HttpHandler {
 	            	case "ftxaddress":
 	            		ftxaddress = (String)parameters.get(key);
 	            		break;
+	            	case "merkleroot":
+	            		merkleroot = (String)parameters.get(key);
+	            		break;
 	            	default:
 	            		outputList.put(key, Double.valueOf((String)parameters.get(key)));
 	            		break;
 	            	}
 	            }
 	            
-	            Transaction tx = new TokenTransaction(ftxid, ftxaddress, outputList);
+	            Transaction tx = new TokenTransaction(merkleroot, ftxid, ftxaddress, outputList);
 	            
 	            KeyPair pair = KeyManager.getInstance().Get().getPair();
 	            
 	            tx.setSignature(TransactionManager.getInstance().Sign(tx.getBytes(), pair.getPrivate()));
 	            tx.setPublicKey(pair.getPublic());
+	            
+	            TransactionManager.getInstance().Push(tx, pair.getPublic());
 	            
 	            if(Linker.getInstance().broadcastingTransactrionUsingSerialization(tx))
 	            {
