@@ -6,6 +6,11 @@ import fairy.core.utils.Convert;
 
 public class TokenTransaction extends Transaction {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2161587593778774337L;
+
 	private String merkleroot = null;
 	
 	// INPUT
