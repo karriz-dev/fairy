@@ -102,12 +102,25 @@ public class TransactionManager extends Thread
 	public boolean Push(Transaction tx, PublicKey key)
 	{
 		try {
-			if(Verify(tx, key))
+			if(TransactionValidator.getInstance().Excute(tx) != null)
 			{
-				return transactionQueue.add(tx);
+				double value = (double)TransactionValidator.getInstance().Excute(tx);
+				
+				System.out.println("VALUE: " + value);
+				
+				if(Verify(tx, key))
+				{
+					return transactionQueue.add(tx);
+				}
+				else {
+					Debugger.Log(this, "transaction doesn't verify... try again !!");
+					return false;
+				}
 			}
-			else return false;
-			
+			else {
+				Debugger.Log(this, "transaction is invalid... try again !!");
+				return false;
+			}
 		}catch(Exception e) {
 			Debugger.Log(this, e);
 			return false;
@@ -117,7 +130,7 @@ public class TransactionManager extends Thread
 	public byte[] Sign(byte[] data, PrivateKey key) {
 		try {
 			Signature dsa = Signature.getInstance("SHA1withECDSA");
-
+			
 	        dsa.initSign(key);
 
 	        dsa.update(data);
