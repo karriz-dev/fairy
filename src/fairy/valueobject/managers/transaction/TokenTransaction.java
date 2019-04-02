@@ -41,6 +41,14 @@ public class TokenTransaction extends Transaction {
 	public Map<String, Double> getOutputList() {
 		return outputList;
 	}
+	
+	public double getBalance() {
+		double result = 0.0;
+		for(String address: outputList.keySet()) {
+			result += outputList.get(address);
+		}
+		return result;
+	}
 
 	@Override
 	protected byte[] getDatasBytes() {
