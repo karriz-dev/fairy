@@ -6,9 +6,6 @@ import fairy.core.utils.Convert;
 
 public class TokenTransaction extends Transaction {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2161587593778774337L;
 
 	private String merkleroot = null;
@@ -64,15 +61,6 @@ public class TokenTransaction extends Transaction {
 		return result;
 	}
 	
-	public double getBalance() {
-		double balance = 0.0;
-		for(String key: outputList.keySet())
-		{
-			balance += outputList.get(key);	
-		}
-		return balance;
-	}
-
 	@Override
 	public String toString() {
 		return "TokenTransaction [ftxid=" + ftxid + ", ftxaddress=" + ftxaddress + ", outputList=" + outputList
