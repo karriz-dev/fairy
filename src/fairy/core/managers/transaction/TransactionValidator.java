@@ -19,13 +19,13 @@ public class TransactionValidator {
 		case TransactionType.TOKEN:
 			TokenTransaction token = (TokenTransaction)tx;
 			
-			String tokenMerkleRoot = token.getMerkleRoot();
+			String tokenMerkleRoot = token.getMerkleroot();
 			
 			if(tokenMerkleRoot != null)
 			{
 				for(Block b: LedgerManager.getInstance().getBlockList())
 				{
-					if(tokenMerkleRoot.equals(b.getMerkleRoot()))
+					if(tokenMerkleRoot.equals(b.getMerkleroot()))
 					{
 						return b.getBalance(token.getFtxid(), token.getFtxaddress());
 					}
