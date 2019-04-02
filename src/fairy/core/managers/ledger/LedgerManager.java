@@ -52,9 +52,9 @@ public class LedgerManager{
 			List<Transaction> txlist = new ArrayList<Transaction>();
 			
 			Map<String, Double> tokenMap = new HashMap<String, Double>();
-			tokenMap.put("0xGenesisTransaction", 100810080.0);
+			tokenMap.put("GENESIS_TRANSACTION", 100810081008.0);
 			
-			Transaction tx = new TokenTransaction("3A95A12DDB17FC89DC47DE1D24D975FEDCC99B7E0FA091E5CAE3AD5E3B9B0062", "1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX", tokenMap);
+			Transaction tx = new TokenTransaction("GENESIS_MERKLE_ROOT", "GENESIS_TRANSACTION_ID", "GENESIS_TRANSACTION_ADDRESS", tokenMap);
 			
 			txlist.add(tx);
 			
@@ -94,13 +94,13 @@ public class LedgerManager{
 		
 		try {
 			File folder = new File("assets/blocks/");
-
+			
 			for (final File fileEntry : folder.listFiles()) {
 		        if (!fileEntry.isDirectory()) {
 		        	blockList.add(BlockManager.getInstance().getBlock(fileEntry));
 		        }
 		    }
-			
+
 			return blockList;
 		}catch(Exception e) {
 			Debugger.Log(this, e);
