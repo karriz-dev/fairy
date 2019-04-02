@@ -27,12 +27,24 @@ public class TransactionValidator {
 				{
 					if(tokenMerkleRoot.equals(b.getMerkleroot()))
 					{
-						return b.getBalance(token.getFtxid(), token.getFtxaddress());
+						double result = b.getBalance(token.getFtxid(), token.getFtxaddress());
+
+						if(result == 0.0)
+							return null;
+						else {
+							if(token.getBalance() <= result)
+							{
+								return result;
+							}
+						}
 					}
 				}
 				return null;
 			}
 			else return null;
+			
+		case TransactionType.HYDROGEN:
+			return null;
 			
 			default:
 				return null;
