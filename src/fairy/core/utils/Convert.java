@@ -23,6 +23,12 @@ public class Convert {
 	    return buffer.array();
 	}
 	
+	public static byte[] doubleToBytes(double x) {
+	    ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
+	    buffer.putDouble(x);
+	    return buffer.array();
+	}
+	
 	public static byte booleanToByte(boolean b) {
 		return (byte) (b ? 1 : 0 );
 	}
@@ -73,6 +79,13 @@ public class Convert {
 		return txlist;
 	}
 
+	public static double bytesToDouble(byte[] bytes) {
+	    ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
+	    buffer.put(bytes);
+	    buffer.flip();//need flip 
+	    return buffer.getDouble();
+	}
+	
 	public static long bytesToLong(byte[] bytes) {
 	    ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
 	    buffer.put(bytes);
