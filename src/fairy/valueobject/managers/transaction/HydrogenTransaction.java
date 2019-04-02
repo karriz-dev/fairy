@@ -1,5 +1,7 @@
 package fairy.valueobject.managers.transaction;
 
+import fairy.core.utils.Convert;
+
 public class HydrogenTransaction extends Transaction {
 
 	private static final long serialVersionUID = -7646520847139737802L;
@@ -22,6 +24,16 @@ public class HydrogenTransaction extends Transaction {
 
 	@Override
 	protected byte[] getDatasBytes() {
+		byte[] addressBytes = address.getBytes();
+		
+		byte[] result = new byte[addressBytes.length + 16];
+		
+		System.arraycopy(addressBytes, 0, result, 0, addressBytes.length);
+
+		System.arraycopy(Convert.doubleToBytes(this.hydrogen), 0, result, addressBytes.length, 8);
+
+		System.arraycopy(Convert.doubleToBytes(this.max), 0, result, addressBytes.length + 8, 8);
+
 		return null;
 	}
 
