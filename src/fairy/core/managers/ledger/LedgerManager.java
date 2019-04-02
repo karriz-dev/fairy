@@ -10,6 +10,7 @@ import java.util.Map;
 import fairy.core.managers.block.BlockManager;
 import fairy.core.utils.Debugger;
 import fairy.valueobject.managers.block.Block;
+import fairy.valueobject.managers.transaction.HydrogenTransaction;
 import fairy.valueobject.managers.transaction.TokenTransaction;
 import fairy.valueobject.managers.transaction.Transaction;
 
