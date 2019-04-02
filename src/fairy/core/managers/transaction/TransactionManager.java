@@ -104,10 +104,6 @@ public class TransactionManager extends Thread
 		try {
 			if(TransactionValidator.getInstance().Excute(tx) != null)
 			{
-				double value = (double)TransactionValidator.getInstance().Excute(tx);
-				
-				System.out.println("VALUE: " + value);
-				
 				if(Verify(tx, key))
 				{
 					return transactionQueue.add(tx);
