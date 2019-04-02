@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.security.PublicKey;
 
 import fairy.core.net.communicator.Session;
+import fairy.core.security.Shield;
 import fairy.core.utils.Convert;
 
 public abstract class Transaction implements Serializable {
@@ -27,11 +28,10 @@ public abstract class Transaction implements Serializable {
 	{
 		this.type = type;
 		this.timestamp = System.currentTimeMillis();
-		
-		this.tid = "12345678123456781234567812345678";
-		
-		this.datas = "Test Transaction".getBytes();
+		this.datas = "{fairy://0.1.0.0v}".getBytes();
 		this.length = datas.length;
+		
+		this.tid = Shield.SHA256(this.getHeaderBytesExceptID());
 	}
 
 	public Transaction(byte[][] stream)
@@ -45,6 +45,9 @@ public abstract class Transaction implements Serializable {
 		this.datas = stream[6];
 	}
 	
+	public short getType() {
+		return this.type;
+	}
 	public void setSignature(byte[] sign) {
 		this.signature = sign;
 	}
@@ -82,9 +85,29 @@ public abstract class Transaction implements Serializable {
 		return this.key;
 	}
 	
+	private byte[] getHeaderBytesExceptID() {
+		String version = Session.getInstance().getSessionVersion();
+	
+		byte[] versiondata = version.getBytes();
+		versionlength = versiondata.length;
+		
+		byte[] result = new byte[2 + 8 + 4 + versionlength];
+		
+		System.arraycopy(Convert.ShortToByteArray(type), 0, result, 0, 2);
+		
+		System.arraycopy(Convert.longToBytes(timestamp), 0, result, 2, 8);
+		
+		System.arraycopy(Convert.intToByteArray(versionlength), 0, result, 10, 4);
+		
+		System.arraycopy(versiondata, 0, result, 14, versionlength);
+		
+		return result;
+	}
+	
+	
 	private byte[] getHeaderBytes() {
 		String version = Session.getInstance().getSessionVersion();
-		
+	
 		byte[] versiondata = version.getBytes();
 		versionlength = versiondata.length;
 		
