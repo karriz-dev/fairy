@@ -1,6 +1,7 @@
 package fairy.core.security;
 
 import java.security.MessageDigest;
+import java.security.PublicKey;
 
 public class Shield {
 	public static String SHA256(byte[] data){
@@ -34,5 +35,10 @@ public class Shield {
         } catch(Exception ex){
             throw new RuntimeException(ex);
         }		
+	}
+	public static String Address(PublicKey key)
+	{
+		Base58 base58 = new Base58();
+		return "0x" + base58.encode(key.getEncoded()).substring(0, 32);
 	}
 }

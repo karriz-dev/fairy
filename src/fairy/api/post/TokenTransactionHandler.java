@@ -57,15 +57,9 @@ public class TokenTransactionHandler extends Handler implements HttpHandler {
 	            	}
 	            }
 	            
-	            System.out.println("============================= API HANDLER WORKED !! =============================");
-	            System.out.println("FTXID: " + ftxid);
-	            System.out.println("FTXADDRESS: " + ftxaddress);            
-	            System.out.println("OUTPUT LIST: " + outputList);
-	            System.out.println("============================= API HANDLER WORKED !! =============================");
-	            
 	            Transaction tx = new TokenTransaction(ftxid, ftxaddress, outputList);
 	            
-	            KeyPair pair = KeyManager.getInstance().getKeyPair();
+	            KeyPair pair = KeyManager.getInstance().Get().getPair();
 	            
 	            tx.setSignature(TransactionManager.getInstance().Sign(tx.getBytes(), pair.getPrivate()));
 	            tx.setPublicKey(pair.getPublic());

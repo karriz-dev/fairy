@@ -3,6 +3,10 @@ package fairy.valueobject.managers.transaction;
 public class TransactionOrderConfirm extends Transaction{
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2888654177011239289L;
 	private String targetTransactionID = null;
 	private String buyerAddress = null;
 	private double totalHydrogenCount = 0.0;
