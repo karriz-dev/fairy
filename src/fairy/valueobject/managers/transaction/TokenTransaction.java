@@ -6,6 +6,8 @@ import fairy.core.utils.Convert;
 
 public class TokenTransaction extends Transaction {
 	
+	private String merkleroot = null;
+	
 	// INPUT
 	private String ftxid = null;
 	private String ftxaddress = null;
@@ -13,12 +15,29 @@ public class TokenTransaction extends Transaction {
 	// OUTPUT
 	private Map<String, Double> outputList = null;
 	
-	public TokenTransaction(String ftxid, String ftxaddress, Map<String, Double> outputList) {
+	public TokenTransaction(String merkleroot, String ftxid, String ftxaddress, Map<String, Double> outputList) {
 		super(TransactionType.TOKEN);
 		
+		this.merkleroot = merkleroot;
 		this.ftxid = ftxid;
 		this.ftxaddress = ftxaddress;
 		this.outputList = outputList;
+	}
+
+	public String getMerkleroot() {
+		return merkleroot;
+	}
+
+	public String getFtxid() {
+		return ftxid;
+	}
+
+	public String getFtxaddress() {
+		return ftxaddress;
+	}
+
+	public Map<String, Double> getOutputList() {
+		return outputList;
 	}
 
 	@Override
