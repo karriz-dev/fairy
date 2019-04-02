@@ -18,6 +18,7 @@ import fairy.core.managers.key.KeyManager;
 import fairy.core.managers.transaction.TransactionManager;
 import fairy.core.net.communicator.Linker;
 import fairy.valueobject.managers.transaction.HydrogenTransaction;
+import fairy.valueobject.managers.transaction.TokenTransaction;
 import fairy.valueobject.managers.transaction.Transaction;
 
 public class HydrogenTransactionHandler extends Handler implements HttpHandler {
