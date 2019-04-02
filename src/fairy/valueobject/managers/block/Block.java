@@ -16,6 +16,10 @@ import fairy.valueobject.managers.transaction.Transaction;
 
 public class Block implements Serializable {
 
+	public String getMerkleroot() {
+		return merkleroot;
+	}
+
 	private static final long serialVersionUID = 2925905777153845523L;
 
 	//Header
@@ -68,15 +72,26 @@ public class Block implements Serializable {
 		this.prevbid = prevbid;
 	}
 
-	public double getBalance() {
-		double balance = 0.0;
+	public double getBalance(String tid, String address) {
 		for(Transaction tx: txlist)
 		{
-			TokenTransaction token = (TokenTransaction)tx;
-			
-			balance += token.getBalance();
+			if(tx.getTransactionID().equals(tid))
+			{
+				TokenTransaction token = (TokenTransaction)tx;
+				
+				for(String key: token.getOutputList().keySet())
+				{
+					if(key.equals(address)) {
+						try {
+							return token.getOutputList().get(address);
+						}catch(Exception e) {
+							return 0.0;
+						}
+					}
+				}
+			}
 		}
-		return balance;
+		return 0.0;
 	}
 
 	public void setGenesis(boolean isGen) {
