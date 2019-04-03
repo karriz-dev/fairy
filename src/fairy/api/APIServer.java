@@ -6,6 +6,7 @@ import com.sun.net.httpserver.HttpServer;
 
 import fairy.api.get.BlockListHandler;
 import fairy.api.get.LastestBlockHeightHandler;
+import fairy.api.get.TokenBalanceHandler;
 import fairy.api.get.TransactionSearchHandler;
 import fairy.api.post.TokenTransactionHandler;
 import fairy.core.utils.Debugger;
@@ -30,6 +31,8 @@ public class APIServer {
 			httpServer.createContext("/block/list",new BlockListHandler());
 			httpServer.createContext("/block/lastest/height",new LastestBlockHeightHandler());
 			
+			//token
+			httpServer.createContext("/token/balance",new TokenBalanceHandler());
 			
 			httpServer.setExecutor(null);
 			httpServer.start();
