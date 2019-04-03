@@ -57,6 +57,8 @@ public class LedgerManager{
 			
 			Transaction tx = new TokenTransaction("GENESIS_MERKLE_ROOT", "GENESIS_TRANSACTION_ID", "GENESIS_TRANSACTION_ADDRESS", tokenMap);
 			
+			tx.setGenesisTransaction();
+			
 			txlist.add(tx);
 			
 			Block block = new Block("GENESIS BLOCK", txlist);
@@ -87,6 +89,36 @@ public class LedgerManager{
 		currentBlock.setHeight(latestBlock.getHeight() + 1);
 		
 		return currentBlock.getHeight();
+	}
+	
+	public double getBalance(String address)
+	{
+		double balance = 0.0;
+		
+		try {
+			File folder = new File("assets/blocks/");
+			
+			for (final File fileEntry : folder.listFiles()) {
+		        if (!fileEntry.isDirectory()) {
+		        	Block b = BlockManager.getInstance().getBlock(fileEntry);
+		        	
+		        	balance = b.getBalance(address);
+		        	
+		        	System.out.println(balance);
+		        	
+		        	if(balance > 0.0)
+		        	{
+		        		return balance;
+		        	}
+		        	else return -1.0;
+		        }
+		    }
+
+			return balance;
+		}catch(Exception e) {
+			Debugger.Log(this, e);
+			return -1.0;
+		}
 	}
 	
 	public List<Block> getBlockList()
