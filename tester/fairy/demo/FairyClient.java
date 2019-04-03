@@ -7,6 +7,7 @@ import fairy.core.managers.ledger.LedgerManager;
 import fairy.core.managers.transaction.TransactionManager;
 import fairy.core.net.communicator.Linker;
 import fairy.core.net.communicator.Session;
+import fairy.core.utils.Debugger;
 
 public class FairyClient {
 	public static void main(String[] args) {
@@ -29,7 +30,7 @@ public class FairyClient {
 		Session.getInstance();
 		
 		// waiting session is opened
-		while(Session.getInstance().isOpened());
+		while(!Session.getInstance().isOpened());
 
 		// Linker Call
 		Linker.getInstance();
