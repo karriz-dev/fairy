@@ -85,6 +85,11 @@ public abstract class Transaction implements Serializable {
 		return this.key;
 	}
 	
+	public boolean setGenesisTransaction() {
+		this.tid = "GENESIS_TRANSACTION_ID";
+		return true;
+	}
+	
 	private byte[] getHeaderBytesExceptID() {
 		String version = Session.getInstance().getSessionVersion();
 	
