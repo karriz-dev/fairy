@@ -72,6 +72,25 @@ public class Block implements Serializable {
 		this.prevbid = prevbid;
 	}
 
+	public double getBalance(String address) {
+		for(Transaction tx: txlist)
+		{
+			TokenTransaction token = (TokenTransaction)tx;
+			
+			for(String key: token.getOutputList().keySet())
+			{
+				if(key.equals(address)) {
+					try {
+						return token.getOutputList().get(address);
+					}catch(Exception e) {
+						return 0.0;
+					}
+				}
+			}
+		}
+		return 0.0;
+	}
+	
 	public double getBalance(String tid, String address) {
 		for(Transaction tx: txlist)
 		{
