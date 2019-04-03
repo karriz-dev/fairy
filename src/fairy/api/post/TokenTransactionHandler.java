@@ -68,8 +68,6 @@ public class TokenTransactionHandler extends Handler implements HttpHandler {
 	            tx.setSignature(TransactionManager.getInstance().Sign(tx.getBytes(), pair.getPrivate()));
 	            tx.setPublicKey(pair.getPublic());
 	            
-	            TransactionManager.getInstance().Push(tx, pair.getPublic());
-	            
 	            if(Linker.getInstance().broadcastingTransactrionUsingSerialization(tx))
 	            {
 	            	response = "Transaction was broadcasted !! \r\n" + tx.toString();
