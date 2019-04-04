@@ -44,7 +44,7 @@ public class TransactionValidator {
 			else return null;
 			
 		case TransactionType.HYDROGEN:
-			return null;
+			return true;
 			
 			default:
 				return null;
