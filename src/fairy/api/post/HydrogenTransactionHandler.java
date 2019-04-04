@@ -41,38 +41,23 @@ public class HydrogenTransactionHandler extends Handler implements HttpHandler {
 
 	        if(!parameters.isEmpty())
 	        {
-	        	List<Transaction> transactionList = new ArrayList<Transaction>();
+	            String fromAddress = (String)parameters.get("fromaddress");
+	        	String toAddress = (String)parameters.get("toaddress");
+	        	double value = Double.parseDouble((String)parameters.get("value"));
+	        	double max = Double.parseDouble((String)parameters.get("max"));
+	        	
+	        	Transaction tx = new HydrogenTransaction(fromAddress, toAddress, value, max);
 
-	            for (String key : parameters.keySet()) {
-	            	Transaction tx = new HydrogenTransaction(key, Double.valueOf((String)parameters.get(key)), 1000.0);
+	            KeyPair pair = KeyManager.getInstance().Get().getPair();
 
-		            KeyPair pair = KeyManager.getInstance().Get().getPair();
-		            
-		            tx.setSignature(TransactionManager.getInstance().Sign(tx.getBytes(), pair.getPrivate()));
-		            tx.setPublicKey(pair.getPublic());
-
-		            transactionList.add(tx);
-	            }
-
-	            int count = 0;
+	            tx.setSignature(TransactionManager.getInstance().Sign(tx.getBytes(), pair.getPrivate()));
+	            tx.setPublicKey(pair.getPublic());
 	            
-	            for(Transaction tx: transactionList)
+	            if(Linker.getInstance().broadcastingTransactrionUsingSerialization(tx))
 	            {
-	            	if(Linker.getInstance().broadcastingTransactrionUsingSerialization(tx))
-		            {
-			    		count++;
-		            }else{
-		            	response = "Transaction wasn't broadcasted !! \r\n" + tx.toString();
-		            }
-	            }
-	            
-	            if(count == transactionList.size())
-	            {
-	            	response = "All transaction was broadcasted !!";
-	            }
-	            else
-	            {
-	            	response = "transaction wasn't broadcasted !!(not send: " + (transactionList.size() - count) + ")";
+	            	response = "Transaction was broadcasted !! \r\n" + tx.toString();
+	            }else{
+	            	response = "Transaction wasn't broadcasted !! \r\n";
 	            }
 	            
 	            exchange.sendResponseHeaders(200, response.length());
