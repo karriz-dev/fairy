@@ -13,6 +13,7 @@ import fairy.core.security.Shield;
 import fairy.core.utils.Debugger;
 import fairy.valueobject.managers.transaction.TokenTransaction;
 import fairy.valueobject.managers.transaction.Transaction;
+import fairy.valueobject.managers.transaction.TransactionType;
 
 public class Block implements Serializable {
 
@@ -73,22 +74,31 @@ public class Block implements Serializable {
 	}
 
 	public double getBalance(String address) {
+		boolean isExist = false;
 		for(Transaction tx: txlist)
 		{
-			TokenTransaction token = (TokenTransaction)tx;
-			
-			for(String key: token.getOutputList().keySet())
+			if(tx.getType() == TransactionType.TOKEN)
 			{
-				if(key.equals(address)) {
-					try {
-						return token.getOutputList().get(address);
-					}catch(Exception e) {
-						return 0.0;
+				TokenTransaction token = (TokenTransaction)tx;
+				
+				for(String key: token.getOutputList().keySet())
+				{
+					if(key.equals(address)) {
+						try {
+							return token.getOutputList().get(address);
+						}catch(Exception e) {
+							return 0.0;
+						}
 					}
 				}
+				isExist = true;
 			}
 		}
-		return 0.0;
+		
+		if(isExist)
+			return 0.0;
+		else
+			return -1.0;
 	}
 	
 	public double getBalance(String tid, String address) {
