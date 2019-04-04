@@ -47,8 +47,6 @@ public class Node extends Thread {
 					
 					Object object = in.readObject();
 					
-					System.out.println(object.getClass().getName());
-					
 					if(object.getClass().getName().contains("transaction"))
 					{
 						Transaction tx = (Transaction)object;
