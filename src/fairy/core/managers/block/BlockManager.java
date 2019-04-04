@@ -11,25 +11,11 @@ import java.util.Map;
 import fairy.core.utils.Debugger;
 import fairy.valueobject.managers.block.Block;
 
-public class BlockManager extends Thread {
-	
-	public final String genesisTokenAddress = "";
-	public final Double genesisTokenAmount = 10081008.0;
-	
-	private Map<String, Double> genesisTokenMap = null;
-	
+public class BlockManager{
+
 	private static BlockManager instance = null;
 	
-	private BlockManager() {
-		genesisTokenMap = new HashMap<String, Double>();
-	}
-	
-	@Override
-	public void run()
-	{
-		System.out.println("START OK");
-		
-	}
+	private BlockManager() {}
 	
 	public boolean Generate(Block block)
 	{
