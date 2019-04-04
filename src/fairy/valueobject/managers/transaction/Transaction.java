@@ -21,6 +21,10 @@ public abstract class Transaction implements Serializable {
 	protected int length = 0;
 	protected byte[] datas = null;
 	
+	public long getTimestamp() {
+		return timestamp;
+	}
+
 	private byte[] signature = null;
 	protected PublicKey key = null;
 	
