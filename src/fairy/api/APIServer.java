@@ -8,6 +8,8 @@ import fairy.api.get.BlockListHandler;
 import fairy.api.get.LastestBlockHeightHandler;
 import fairy.api.get.TokenBalanceHandler;
 import fairy.api.get.TransactionSearchHandler;
+import fairy.api.get.TransactionSearchRecentHandler;
+import fairy.api.post.HydrogenTransactionHandler;
 import fairy.api.post.TokenTransactionHandler;
 import fairy.core.utils.Debugger;
 
@@ -24,8 +26,11 @@ public class APIServer {
 			
 			//transaction
 			httpServer.createContext("/transaction/token",new TokenTransactionHandler());
+			httpServer.createContext("/transaction/hydrogen",new HydrogenTransactionHandler());
+			
 			httpServer.createContext("/transaction/list",new BlockListHandler());
 			httpServer.createContext("/transaction/search", new TransactionSearchHandler());
+			httpServer.createContext("/transaction/search/recent", new TransactionSearchRecentHandler());
 			
 			//block
 			httpServer.createContext("/block/list",new BlockListHandler());
@@ -33,6 +38,9 @@ public class APIServer {
 			
 			//token
 			httpServer.createContext("/token/balance",new TokenBalanceHandler());
+			
+			//hydrogen
+			httpServer.createContext("/hydrogen/balance",new TokenBalanceHandler());
 			
 			httpServer.setExecutor(null);
 			httpServer.start();

@@ -23,7 +23,8 @@ public class Debugger {
 	
 	public static void Log(Object o, Exception e)
 	{	
-		if(isDebugging)
+		if(isDebugging) {
 			System.out.println("[Error] " + o.getClass().getName() +": " + e.getMessage() +"(cause: " + e.getCause() +")");
+		}
 	}
 }
