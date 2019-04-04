@@ -44,7 +44,7 @@ public class HydrogenTransaction extends Transaction {
 		byte[] toAddressBytes = toAddress.getBytes();
 		byte[] fromAddressBytes = fromAddress.getBytes();
 		
-		byte[] result = new byte[toAddressBytes.length + fromAddressBytes.length + 16];
+		byte[] result = new byte[toAddressBytes.length + fromAddressBytes.length + 24];
 
 		int offset = 0;
 		
