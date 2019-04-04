@@ -10,7 +10,6 @@ import java.util.Map;
 import fairy.core.managers.block.BlockManager;
 import fairy.core.utils.Debugger;
 import fairy.valueobject.managers.block.Block;
-import fairy.valueobject.managers.transaction.HydrogenTransaction;
 import fairy.valueobject.managers.transaction.TokenTransaction;
 import fairy.valueobject.managers.transaction.Transaction;
 
@@ -103,19 +102,16 @@ public class LedgerManager{
 		        	Block b = BlockManager.getInstance().getBlock(fileEntry);
 		        	
 		        	balance = b.getBalance(address);
-		        	
-		        	System.out.println(balance);
-		        	
 		        	if(balance > 0.0)
 		        	{
 		        		return balance;
 		        	}
-		        	else return -1.0;
 		        }
 		    }
 
 			return balance;
 		}catch(Exception e) {
+			Debugger.Log(this, "½Ã¹ß?");
 			Debugger.Log(this, e);
 			return -1.0;
 		}
@@ -154,8 +150,7 @@ public class LedgerManager{
 		    
 		    long lastMod = Long.MIN_VALUE;
 		    
-		    File choice = null
-		    		;
+		    File choice = null;
 		    for (File file : files) {
 		        if (file.lastModified() > lastMod) {
 		            choice = file;
