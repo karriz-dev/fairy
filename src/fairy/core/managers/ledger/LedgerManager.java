@@ -93,25 +93,32 @@ public class LedgerManager{
 	public double getBalance(String address)
 	{
 		double balance = 0.0;
+		long old_height = 0L;
 		
 		try {
 			File folder = new File("assets/blocks/");
 			
 			for (final File fileEntry : folder.listFiles()) {
 		        if (!fileEntry.isDirectory()) {
+		        	
 		        	Block b = BlockManager.getInstance().getBlock(fileEntry);
 		        	
-		        	balance = b.getBalance(address);
-		        	if(balance > 0.0)
+		        	double newbalance = b.getBalance(address);
+		        	long curr_height = b.getHeight();
+		        	
+		        	if(old_height < curr_height)
 		        	{
-		        		return balance;
+		        		if(newbalance > 0.0)
+			        	{
+		        			return newbalance;
+			        	}
+		        		balance = newbalance;
 		        	}
 		        }
 		    }
 
 			return balance;
 		}catch(Exception e) {
-			Debugger.Log(this, "½Ã¹ß?");
 			Debugger.Log(this, e);
 			return -1.0;
 		}
