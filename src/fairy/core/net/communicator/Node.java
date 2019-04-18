@@ -2,13 +2,16 @@ package fairy.core.net.communicator;
 
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import fairy.core.managers.key.KeyManager;
 import fairy.core.managers.ledger.LedgerManager;
 import fairy.core.managers.transaction.TransactionManager;
 import fairy.core.utils.Debugger;
 import fairy.valueobject.managers.block.Block;
+import fairy.valueobject.managers.key.WalletKey;
 import fairy.valueobject.managers.transaction.Transaction;
 
 public class Node extends Thread {
@@ -19,6 +22,9 @@ public class Node extends Thread {
 	private InputStream nodeInputStream = null;
 	private OutputStream nodeOutputStream = null;
 	
+	private ObjectInputStream nodeObjectInputStream = null;
+	private ObjectOutputStream nodeObjectOutputStream = null;
+	
 	private boolean isDead = false;
 	
 	public Node(Socket nodeSock) {
@@ -27,7 +33,9 @@ public class Node extends Thread {
 			
 			this.nodeInputStream = nodeSock.getInputStream();
 			this.nodeOutputStream = nodeSock.getOutputStream();
-		
+			this.nodeObjectInputStream = new ObjectInputStream(nodeInputStream);
+			this.nodeObjectOutputStream= new ObjectOutputStream(nodeOutputStream);
+			
 			this.start();
 		}catch(Exception e) {
 			Debugger.Log(this, e);
@@ -38,18 +46,24 @@ public class Node extends Thread {
 	public void run()
 	{
 		Debugger.Log(this, "node(" + nodeSock.getInetAddress().getHostAddress() +":10080) is connected !"); 
+
 		while(!isDead)
 		{
 			try {
 				if(nodeInputStream.available() > 0)
 				{
-					ObjectInputStream in = new ObjectInputStream(nodeInputStream);
 					
-					Object object = in.readObject();
+					Object object = nodeObjectInputStream.readObject();
 					
 					if(object.getClass().getName().contains("transaction"))
 					{
 						Transaction tx = (Transaction)object;
+						
+						if(tx.getPublicKey() == null) {
+							WalletKey key = KeyManager.getInstance().Get();
+							tx.setPublicKey(key.getPair().getPublic());
+							tx.setSignature(TransactionManager.getInstance().Sign(tx.getBytes(), key.getPair().getPrivate()));
+						}
 						
 						if(TransactionManager.getInstance().Push(tx, tx.getPublicKey())) {	
 							System.out.println("VALID TRANSACTION RECV:" + tx.toString());
@@ -85,7 +99,7 @@ public class Node extends Thread {
 	public boolean sendTransaction(Transaction tx)
 	{
 		try {
-			nodeOutputStream.write(tx.getBytes());
+			nodeObjectOutputStream.write(tx.getBytes());
 			return true;
 		} catch (Exception e) {
 			Debugger.Log(this, e);
