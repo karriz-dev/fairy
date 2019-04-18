@@ -23,7 +23,7 @@ public class BlockListHandler extends Handler implements HttpHandler {
 
 			Gson gson = new Gson();
 		
-			String response = gson.toJson(LedgerManager.getInstance().getLatestBlock());
+			String response = gson.toJson(LedgerManager.getInstance().getBlockList());
 			
 		    OutputStream os = exchange.getResponseBody();
 		    
