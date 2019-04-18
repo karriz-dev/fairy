@@ -12,16 +12,20 @@ public class Handler {
 	public static final String POST = "POST";
 	
 	public Map<String, String> queryToMap(String query) {
-	    Map<String, String> result = new HashMap<>();
-	    for (String param : query.split("&")) {
-	        String[] entry = param.split("=");
-	        if (entry.length > 1) {
-	            result.put(entry[0], entry[1]);
-	        }else{
-	            result.put(entry[0], "");
-	        }
-	    }
-	    return result;
+		try {
+			Map<String, String> result = new HashMap<>();
+		    for (String param : query.split("&")) {
+		        String[] entry = param.split("=");
+		        if (entry.length > 1) {
+		            result.put(entry[0], entry[1]);
+		        }else{
+		            result.put(entry[0], "");
+		        }
+		    }
+		    return result;
+		}catch(Exception e) {
+			return null;
+		}   
 	}
 	
 	public void parseQuery(String query, Map<String, 
