@@ -33,6 +33,10 @@ public class Block implements Serializable {
 		return height;
 	}
 
+	public Long getTimestamp() {
+		return timestamp;
+	}
+
 	public void setHeight(Long height) {
 		this.height = height;
 	}
