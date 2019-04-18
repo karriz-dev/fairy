@@ -26,7 +26,7 @@ public class KeyManager
 	
 	private KeyManager()
 	{
-		wallet = new ArrayList<WalletKey>();
+		this.wallet = new ArrayList<WalletKey>();
 	}
 	
 	private KeyManager(String walletPath)
@@ -47,6 +47,8 @@ public class KeyManager
 				}catch(Exception e) {
 					this.wallet = null;
 				}	
+			}else{
+				this.wallet = new ArrayList<WalletKey>();
 			}
 		}
 	}
@@ -140,6 +142,11 @@ public class KeyManager
 		}catch(Exception e) {
 			return null;
 		}
+	}
+	
+	public List<WalletKey> GetAll()
+	{
+		return this.wallet;
 	}
 	
 	public int Count() {
