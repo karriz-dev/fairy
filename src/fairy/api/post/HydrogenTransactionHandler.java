@@ -46,7 +46,7 @@ public class HydrogenTransactionHandler extends Handler implements HttpHandler {
 	        	double value = Double.parseDouble((String)parameters.get("value"));
 	        	double max = Double.parseDouble((String)parameters.get("max"));
 	        	
-	        	Transaction tx = new HydrogenTransaction(fromAddress, toAddress, value, max);
+	        	Transaction tx = new HydrogenTransaction(toAddress,fromAddress, value, max);
 
 	            KeyPair pair = KeyManager.getInstance().Get().getPair();
 
