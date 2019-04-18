@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -18,11 +19,13 @@ public class Linker extends Thread{
 	private static Linker instance = null;
 	
 	private List<Socket> sockList = null;
+	private List<ObjectOutputStream> outputList = null;
 	
 	private boolean isBoosted = false;
 	
 	private Linker() {
 		sockList = new ArrayList<Socket>();
+		outputList = new ArrayList<ObjectOutputStream>();
 		this.start();
 	}
 	
@@ -71,6 +74,7 @@ public class Linker extends Thread{
 						Socket socket = new Socket();
 						socket.connect(new InetSocketAddress(ipAddress, 10080), 35);
 						sockList.add(socket);
+						outputList.add(new ObjectOutputStream(socket.getOutputStream()));
 						Debugger.Log(this, "success connection to " + ipAddress, 1);
 					}catch(Exception e) {
 						try {
@@ -90,6 +94,7 @@ public class Linker extends Thread{
 						Socket socket = new Socket();
 						socket.connect(new InetSocketAddress(ipAddress, 10080), 3000);
 						sockList.add(socket);
+						outputList.add(new ObjectOutputStream(socket.getOutputStream()));
 						Debugger.Log(this, "success connection to " + ipAddress, 1);
 						isBoosted = false;
 					}catch(Exception e) {
@@ -120,17 +125,12 @@ public class Linker extends Thread{
 	
 	public boolean broadcastingTransactrionUsingSerialization(Transaction tx)
 	{
-		for(Socket clnt: sockList)
+		for(ObjectOutputStream out: outputList)
 		{
 			try {
-				ObjectOutputStream out = new ObjectOutputStream(clnt.getOutputStream());
-				
 				out.writeObject(tx);
-			}catch(Exception e) {
+			} catch (IOException e) {
 				Debugger.Log(this, e);
-				try {
-					clnt.close();
-				} catch (IOException ioe) {}
 				return false;
 			}
 		}
@@ -157,16 +157,12 @@ public class Linker extends Thread{
 	
 	public boolean broadcastingBlock(Block block)
 	{
-		for(Socket clnt: sockList)
+		for(ObjectOutputStream out: outputList)
 		{
 			try {
-				ObjectOutputStream oos = new ObjectOutputStream(clnt.getOutputStream());
-				oos.writeObject(block);
-			}catch(Exception e) {
+				out.writeObject(block);
+			} catch (IOException e) {
 				Debugger.Log(this, e);
-				try {
-					clnt.close();
-				} catch (IOException ioe) {}
 				return false;
 			}
 		}
