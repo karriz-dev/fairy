@@ -39,6 +39,8 @@ public class Shield {
 	public static String Address(PublicKey key)
 	{
 		Base58 base58 = new Base58();
-		return "0x" + base58.encode(key.getEncoded()).substring(0, 32);
+		StringBuilder sb = new StringBuilder(base58.encode(key.getEncoded()));
+		sb.reverse();
+		return "0x" + sb.substring(0, 32);
 	}
 }
