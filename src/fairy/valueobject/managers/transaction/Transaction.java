@@ -3,7 +3,6 @@ package fairy.valueobject.managers.transaction;
 import java.io.Serializable;
 import java.security.PublicKey;
 
-import fairy.core.net.communicator.Session;
 import fairy.core.security.Shield;
 import fairy.core.utils.Convert;
 
@@ -95,7 +94,7 @@ public abstract class Transaction implements Serializable {
 	}
 	
 	private byte[] getHeaderBytesExceptID() {
-		String version = Session.getInstance().getSessionVersion();
+		String version = "{fairy:0.0.0.1v}";
 	
 		byte[] versiondata = version.getBytes();
 		versionlength = versiondata.length;
@@ -115,7 +114,7 @@ public abstract class Transaction implements Serializable {
 	
 	
 	private byte[] getHeaderBytes() {
-		String version = Session.getInstance().getSessionVersion();
+		String version = "{fairy:0.0.0.1v}";
 	
 		byte[] versiondata = version.getBytes();
 		versionlength = versiondata.length;
