@@ -22,10 +22,8 @@ public class TransactionManager extends Thread
 	
 	private static TransactionManager instance = null;
 	
-	public static final int MAX_SIZE = 5;
-	
-	private int difficulty = 10;
-	private final double targetTime = 10.0;
+	private double difficulty = 0.0;
+	private final double targetTime = 1.0;
 	
 	private TransactionManager()
 	{

@@ -12,13 +12,16 @@ import com.sun.net.httpserver.HttpHandler;
 
 import fairy.api.Handler;
 import fairy.api.valueobjects.Recent;
+import fairy.api.valueobjects.RecentDelivery;
 import fairy.api.valueobjects.RecentHydrogen;
+import fairy.api.valueobjects.RecentList;
 import fairy.api.valueobjects.RecentToken;
 import fairy.core.managers.ledger.LedgerManager;
 import fairy.valueobject.managers.block.Block;
 import fairy.valueobject.managers.transaction.HydrogenTransaction;
 import fairy.valueobject.managers.transaction.TokenTransaction;
 import fairy.valueobject.managers.transaction.Transaction;
+import fairy.valueobject.managers.transaction.TransactionDelivery;
 import fairy.valueobject.managers.transaction.TransactionType;
 
 public class TransactionSearchRecentHandler extends Handler implements HttpHandler {
@@ -29,8 +32,8 @@ public class TransactionSearchRecentHandler extends Handler implements HttpHandl
 		{
 			Map<String, String> params = queryToMap(exchange.getRequestURI().getQuery()); 
 			
-	        if(params.keySet().size() > 0)
-	        {
+			if(params != null)
+			{
 	        	short type = (short)Integer.parseInt(params.get("type"),16);
 	        	
 	        	exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
@@ -44,9 +47,7 @@ public class TransactionSearchRecentHandler extends Handler implements HttpHandl
 				
 				Block b = LedgerManager.getInstance().getLatestBlock();
 				
-				long height = b.getHeight();
-				
-				List<Recent> rtlist = new ArrayList<Recent>();
+				RecentList list = new RecentList(b.getHeight(), b.getTimestamp());
 				
 				for(Transaction tx: b.getTransactionList())
 				{
@@ -56,17 +57,21 @@ public class TransactionSearchRecentHandler extends Handler implements HttpHandl
 						{
 						case TransactionType.TOKEN:
 							TokenTransaction token = (TokenTransaction)tx;
-							rtlist.add(new RecentToken(token.getFtxaddress(), token.getOutputList(), token.getTimestamp(), height));
+							list.add(new RecentToken(token.getFtxaddress(),token.getTimestamp(), token.getOutputList()));
 							break;
 						case TransactionType.HYDROGEN:
 							HydrogenTransaction hydrogen = (HydrogenTransaction)tx;
-							rtlist.add(new RecentHydrogen(hydrogen.getFromAddress(),hydrogen.getToAddress(),hydrogen.getHydrogen(), hydrogen.getMax(), hydrogen.getTimestamp(), height));
+							list.add(new RecentHydrogen(hydrogen.getFromAddress(),hydrogen.getToAddress(), hydrogen.getTimestamp(), hydrogen.getHydrogen(), hydrogen.getMax()));
+							break;
+						case TransactionType.DELIVERY:
+							TransactionDelivery delivery = (TransactionDelivery)tx;
+							list.add(new RecentDelivery(delivery.getStartPoisition(),delivery.getEndPosition(), delivery.getTimestamp(), delivery.getHydrogenValue()));
 							break;
 						}
 					}
 				}
 
-				response = gson.toJson(rtlist);
+				response = list.toString();
 				
 			    OutputStream os = exchange.getResponseBody();
 			    
@@ -84,8 +89,29 @@ public class TransactionSearchRecentHandler extends Handler implements HttpHandl
 			    os.close();
 	        }
 	        else {
-				exchange.sendResponseHeaders(400, 0);
-				exchange.close();
+	        	exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+				exchange.getResponseHeaders().set("Access-Control-Max-Age", "3600");
+				exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "x-requested-with");
+				exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+
+				Gson gson = new Gson();
+				
+				String response = gson.toJson(LedgerManager.getInstance().getLatestBlock().getTransactionList());
+				
+			    OutputStream os = exchange.getResponseBody();
+			    
+			    if(response != "")
+			    {
+			    	exchange.sendResponseHeaders(200, response.length());
+			    	os.write(response.toString().getBytes());
+			    }else
+			    {
+			    	response = "error";
+			    	exchange.sendResponseHeaders(200, response.length());
+			    	os.write(response.toString().getBytes());
+			    }
+			    
+			    os.close();
 			}
 			
 		}
