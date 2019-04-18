@@ -2,6 +2,7 @@ package fairy.core.managers.transaction;
 
 import fairy.core.managers.ledger.LedgerManager;
 import fairy.valueobject.managers.block.Block;
+import fairy.valueobject.managers.transaction.OrderTransaction;
 import fairy.valueobject.managers.transaction.TokenTransaction;
 import fairy.valueobject.managers.transaction.Transaction;
 import fairy.valueobject.managers.transaction.TransactionType;
@@ -45,6 +46,27 @@ public class TransactionValidator {
 			
 		case TransactionType.HYDROGEN:
 			return true;
+			
+		case TransactionType.DELIVERY:
+			return true;
+			
+		case TransactionType.ORDER:
+			OrderTransaction order = (OrderTransaction)tx;
+			for(Block b: LedgerManager.getInstance().getBlockList())
+			{
+				for(Transaction target : b.getTransactionList())
+				{
+					if(target.getType() == (short)0xA001)
+					{
+						TokenTransaction checkToken = (TokenTransaction)target;
+						if(checkToken.getFtxaddress().equals(order.getBuyerAddress()))
+						{
+							return true;
+						}
+					}
+				}
+			}
+			return false;
 			
 			default:
 				return null;
