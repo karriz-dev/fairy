@@ -1,10 +1,13 @@
 package fairy.core.managers.transaction;
 
+import java.util.List;
+
 import fairy.core.managers.ledger.LedgerManager;
 import fairy.valueobject.managers.block.Block;
 import fairy.valueobject.managers.transaction.OrderTransaction;
 import fairy.valueobject.managers.transaction.TokenTransaction;
 import fairy.valueobject.managers.transaction.Transaction;
+import fairy.valueobject.managers.transaction.TransactionSellHydrogen;
 import fairy.valueobject.managers.transaction.TransactionType;
 
 public class TransactionValidator {
@@ -49,6 +52,21 @@ public class TransactionValidator {
 			
 		case TransactionType.DELIVERY:
 			return true;
+			
+		case TransactionType.SELL_HYDROGEN:
+			TransactionSellHydrogen sell = (TransactionSellHydrogen)tx;
+			for(Block b: LedgerManager.getInstance().getBlockList())
+			{
+				for(Transaction target : b.getTransactionList())
+				{
+					System.out.println(target.getTransactionID());
+					if(target.getTransactionID().equals(sell.getHydrogenTransactionID()))
+					{
+						return true;
+					}				
+				}
+			}
+			return null;
 			
 		case TransactionType.ORDER:
 			OrderTransaction order = (OrderTransaction)tx;
