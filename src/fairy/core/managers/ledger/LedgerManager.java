@@ -12,6 +12,7 @@ import fairy.core.utils.Debugger;
 import fairy.valueobject.managers.block.Block;
 import fairy.valueobject.managers.transaction.TokenTransaction;
 import fairy.valueobject.managers.transaction.Transaction;
+import fairy.valueobject.managers.transaction.TransactionSellHydrogen;
 
 public class LedgerManager{
 	
@@ -88,6 +89,108 @@ public class LedgerManager{
 		currentBlock.setHeight(latestBlock.getHeight() + 1);
 		
 		return currentBlock.getHeight();
+	}
+	
+	public Block getBlockById(String bid)
+	{
+		try {
+			File folder = new File("assets/blocks/");
+			
+			for (final File fileEntry : folder.listFiles()) {
+		        if (!fileEntry.isDirectory()) {
+		        	if(fileEntry.getName().equals(bid+".block"))
+		        	{
+		        		return BlockManager.getInstance().getBlock(fileEntry);
+		        	}
+		        }
+			}
+			
+			return null;
+		}catch(Exception e) {
+			Debugger.Log(this, e);
+			return null;
+		}
+	}
+	
+	public double getSellHydrogenInformation1()
+	{
+		double result = 0.0;
+		
+		for(Block b : getBlockList())
+		{
+			for(Transaction tx: b.getTransactionList())
+			{
+				if(tx.getType() == (short)0xC002)
+				{
+					TransactionSellHydrogen sell = (TransactionSellHydrogen)tx;
+					result = sell.getBiddingCount();
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	public double getSellHydrogenInformation2()
+	{
+		double result = 0.0;
+		
+		for(Block b : getBlockList())
+		{
+			for(Transaction tx: b.getTransactionList())
+			{
+				if(tx.getType() == (short)0xC002)
+				{
+					TransactionSellHydrogen sell = (TransactionSellHydrogen)tx;
+					result = sell.getBiddingPrice();
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	public String getSellHydrogenInformation3()
+	{
+		String result = "";
+		
+		for(Block b : getBlockList())
+		{
+			for(Transaction tx: b.getTransactionList())
+			{
+				if(tx.getType() == (short)0xC002)
+				{
+					TransactionSellHydrogen sell = (TransactionSellHydrogen)tx;
+					result = sell.getSellerAddress();
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	public Transaction getTransactionById(String tid)
+	{
+		try {
+			File folder = new File("assets/blocks/");
+			
+			for (final File fileEntry : folder.listFiles()) {
+		        if (!fileEntry.isDirectory()) {
+		        	Block b = BlockManager.getInstance().getBlock(fileEntry);
+		        	for(Transaction t : b.getTransactionList()) {
+		        		if(t.getTransactionID().equals(tid))
+		        		{
+		        			return t;
+		        		}
+		        	}
+		        }
+			}
+			
+			return null;
+		}catch(Exception e) {
+			Debugger.Log(this, e);
+			return null;
+		}
 	}
 	
 	public double getBalance(String address)
