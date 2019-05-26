@@ -1,7 +1,5 @@
 package fairy.core.managers.transaction;
 
-import java.util.List;
-
 import fairy.core.managers.ledger.LedgerManager;
 import fairy.valueobject.managers.block.Block;
 import fairy.valueobject.managers.transaction.OrderTransaction;
@@ -59,7 +57,6 @@ public class TransactionValidator {
 			{
 				for(Transaction target : b.getTransactionList())
 				{
-					System.out.println(target.getTransactionID());
 					if(target.getTransactionID().equals(sell.getHydrogenTransactionID()))
 					{
 						return true;
@@ -77,8 +74,13 @@ public class TransactionValidator {
 					if(target.getType() == (short)0xA001)
 					{
 						TokenTransaction checkToken = (TokenTransaction)target;
-						if(checkToken.getFtxaddress().equals(order.getBuyerAddress()))
+						
+						if(checkToken.getOutputList().keySet().contains(order.getBuyerAddress()))
 						{
+							ValidationThread t = new ValidationThread(order.getMaxTime(), order.getBuyerAddress(), order.getTransactionID());
+							
+							t.start();
+							
 							return true;
 						}
 					}
