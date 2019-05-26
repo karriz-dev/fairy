@@ -30,17 +30,17 @@ public class TransactionSearchRecentHandler extends Handler implements HttpHandl
 	public void handle(HttpExchange exchange) throws IOException {
 		if(exchange.getRequestMethod().toUpperCase().equals(Handler.GET))
 		{
+			exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+			exchange.getResponseHeaders().set("Access-Control-Max-Age", "3600");
+			exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "x-requested-with");
+			exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+			
 			Map<String, String> params = queryToMap(exchange.getRequestURI().getQuery()); 
 			
 			if(params != null)
 			{
 	        	short type = (short)Integer.parseInt(params.get("type"),16);
 	        	
-	        	exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-				exchange.getResponseHeaders().set("Access-Control-Max-Age", "3600");
-				exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "x-requested-with");
-				exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
-
 				Gson gson = new Gson();
 				
 				String response = null;
@@ -65,7 +65,7 @@ public class TransactionSearchRecentHandler extends Handler implements HttpHandl
 							break;
 						case TransactionType.DELIVERY:
 							TransactionDelivery delivery = (TransactionDelivery)tx;
-							list.add(new RecentDelivery(delivery.getStartPoisition(),delivery.getEndPosition(), delivery.getTimestamp(), delivery.getHydrogenValue()));
+							list.add(new RecentDelivery(tx.getTransactionID(), delivery.getStartPoisition(),delivery.getEndPosition(), delivery.getTimestamp(), delivery.getHydrogenValue()));
 							break;
 						}
 					}
