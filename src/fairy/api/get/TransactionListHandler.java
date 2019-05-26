@@ -22,8 +22,9 @@ public class TransactionListHandler extends Handler implements HttpHandler {
 		{
 			exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
 			exchange.getResponseHeaders().set("Access-Control-Max-Age", "3600");
-			exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "x-requested-with");
+			exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization");
 			exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+
 
 			Gson gson = new Gson();
 		
