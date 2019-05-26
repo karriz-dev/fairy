@@ -34,7 +34,7 @@ public abstract class Transaction implements Serializable {
 		this.datas = "{fairy://0.1.0.0v}".getBytes();
 		this.length = datas.length;
 		
-		this.tid = Shield.SHA256(this.getHeaderBytesExceptID());
+		this.tid = "0x01" + Shield.SHA256(this.getHeaderBytesExceptID());
 	}
 
 	public Transaction(byte[][] stream)

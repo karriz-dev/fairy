@@ -25,11 +25,13 @@ public class TransactionManager extends Thread
 	private double difficulty = 0.0;
 	private final double targetTime = 1.0;
 	
+	private int transactionCounter = 0;
+	
 	private TransactionManager()
 	{
 		try {
 			transactionQueue = new LinkedList<Transaction>();
-
+			transactionCounter = 0;
 			this.start();
 		}catch(Exception e) {
 			Debugger.Log(this, e);
@@ -69,6 +71,7 @@ public class TransactionManager extends Thread
 								{
 									// 이미 존재 하는 블록이면 만들어 지지않고 넘어감
 									Linker.getInstance().broadcastingBlock(block);
+									transactionCounter = transactionCounter + 1;
 									Debugger.Log(this, "block(" + block.getBid() +") is broadcasted");
 									Debugger.Log(this, block.toString());
 								}
@@ -133,6 +136,10 @@ public class TransactionManager extends Thread
 		}catch(Exception e) {
 			return null;
 		}
+	}
+	
+	public int Count() {
+		return this.transactionCounter;
 	}
 	
 	private boolean Verify(Transaction tx, PublicKey key) {

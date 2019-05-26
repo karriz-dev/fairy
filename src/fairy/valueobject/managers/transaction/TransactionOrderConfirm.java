@@ -12,13 +12,19 @@ public class TransactionOrderConfirm extends Transaction{
 	private String targetTransactionID = null;
 	private String sellerAddress = null;
 	
-	public TransactionOrderConfirm() {
+	public TransactionOrderConfirm(String id, String buyer, double total, double value, String seller) 
+	{
 		super(TransactionType.ORDER_CONFIRM);
+		
+		this.buyerAddress = buyer;
+		this.totalHydrogenCount = total;
+		this.value = value;
+		this.targetTransactionID = id;
+		this.sellerAddress = seller;
 	}
 
 	@Override
 	protected byte[] getDatasBytes() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }
