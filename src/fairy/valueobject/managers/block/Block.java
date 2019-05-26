@@ -58,7 +58,7 @@ public class Block implements Serializable {
 		this.merkleroot = MerkleTree.getMerkleRoot(txlist);
 		this.txlist = txlist;
 		
-		this.bid = Shield.SHA256(this.merkleroot);
+		this.bid = "0x02" + Shield.SHA256(this.merkleroot);
 	}
 
 	public String getBid() {
